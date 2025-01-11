@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { ValidationPipe } from '@nestjs/common';
+import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
 
 async function start() {
@@ -16,12 +16,13 @@ async function start() {
     origin: (origin, callback) => {
       const allowedOrigins = [
         'http://localhost:5173',
+        'http://localhost:3000'
         // 'http://another-domain.com',
       ];
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
-        callback(new Error('Not allowed by CORS'));
+        callback(new BadRequestException('Not allowed by CORS'));
       }
     },
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
