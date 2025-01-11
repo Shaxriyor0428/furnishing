@@ -1,26 +1,78 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Admin } from './entities/admin.entity';
+import { Repository } from 'typeorm';
+import { hash } from 'bcrypt';
+import { createApiResponse } from '../common/utils';
 
 @Injectable()
 export class AdminService {
-  create(createAdminDto: CreateAdminDto) {
-    return 'This action adds a new admin';
+  constructor(
+    @InjectRepository(Admin) private readonly adminRepo: Repository<Admin>,
+  ) {}
+  async create(createAdminDto: CreateAdminDto) {
+    const existsAdmin = await this.adminRepo.findOne({
+      where: {
+        email: createAdminDto.email,
+      },
+    });
+    if (existsAdmin) {
+      throw new NotFoundException('Admin already exists');
+    }
+
+    const hashed_password = await hash(createAdminDto.password, 7);
+    const newAdmin = await this.adminRepo.save({
+      ...createAdminDto,
+      hashed_password,
+    });
+    if (!newAdmin) {
+      throw new ForbiddenException('Error on creating Admin');
+    }
+    return newAdmin;
   }
 
-  findAll() {
-    return `This action returns all admin`;
+  async findAll() {
+    const admins = await this.adminRepo.find();
+    return createApiResponse(
+      200,
+      'List of admins retrieved successfully',
+      admins,
+    );
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} admin`;
+  async findOne(id: number) {
+    const admin = await this.adminRepo.findOne({ where: { id } });
+    if (!admin) {
+      throw new NotFoundException(`Admin with id ${id} not found`);
+    }
+    return createApiResponse(200, 'Admin retrieved successfully', admin);
   }
 
-  update(id: number, updateAdminDto: UpdateAdminDto) {
-    return `This action updates a #${id} admin`;
+  async update(id: number, updateAdminDto: UpdateAdminDto) {
+    const existingAdmin = await this.adminRepo.findOne({ where: { id } });
+    if (!existingAdmin) {
+      throw new NotFoundException(`Admin with id ${id} not found`);
+    }
+
+    await this.adminRepo.update(id, updateAdminDto);
+    const updatedAdmin = await this.adminRepo.findOne({ where: { id } });
+
+    return createApiResponse(200, 'Admin updated successfully', updatedAdmin);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} admin`;
+  async remove(id: number) {
+    const admin = await this.adminRepo.findOne({ where: { id } });
+    if (!admin) {
+      throw new NotFoundException(`Admin with id ${id} not found`);
+    }
+
+    await this.adminRepo.delete(id);
+    return createApiResponse(200, 'Admin removed successfully');
   }
 }
