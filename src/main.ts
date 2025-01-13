@@ -16,6 +16,7 @@ async function start() {
     origin: (origin, callback) => {
       const allowedOrigins = [
         'http://localhost:5173',
+        'http://localhost:3001'
         'http://localhost:3000',
         // 'http://another-domain.com',
       ];
@@ -29,7 +30,7 @@ async function start() {
     credentials: true,
   });
 
-  const config_swagger = new DocumentBuilder()
+  const config = new DocumentBuilder()
     .setTitle('Furnishings')
     .addBearerAuth()
     .setDescription(
@@ -39,9 +40,9 @@ async function start() {
     .addTag('Nestjs, TypeOrm, Validation')
     .build();
 
-  const documentFactory = () =>
-    SwaggerModule.createDocument(app, config_swagger);
-  SwaggerModule.setup('api/docs', app, documentFactory);
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('/api/docs', app, document);
+
   await app.listen(PORT, () => console.log(`Server running at port ${PORT}`));
 }
 

@@ -4,6 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { AdminModule } from './admin/admin.module';
 import { AuthModule } from './auth/auth.module';
+import { ProductModule } from './product/product.module';
+import { FileModule } from './file/file.module';
 import { CustomerModule } from './customer/customer.module';
 
 @Module({
@@ -11,7 +13,7 @@ import { CustomerModule } from './customer/customer.module';
     ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.HOST,
+      host: process.env.PG_HOST,
       port: +process.env.PG_PORT,
       username: process.env.PG_USER,
       password: process.env.PG_PASS,
@@ -23,6 +25,8 @@ import { CustomerModule } from './customer/customer.module';
     }),
     AdminModule,
     AuthModule,
+    ProductModule,
+    FileModule
     CustomerModule,
   ],
   controllers: [],

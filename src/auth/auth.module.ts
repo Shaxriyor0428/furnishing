@@ -13,7 +13,6 @@ import { CustomerAuthService } from './customer-auth/customer.auth.service';
     AdminModule,
     JwtModule.register({}),
     TypeOrmModule.forFeature([Admin]),
-    // MailModule
   ],
   controllers: [AdminAuthController, CustomerAuthController],
   providers: [AdminAuthService, CustomerAuthService],
