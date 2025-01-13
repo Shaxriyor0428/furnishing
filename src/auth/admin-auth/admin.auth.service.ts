@@ -97,7 +97,7 @@ export class AdminAuthService {
       access_token,
     };
     await this.updateRefreshToken(admin.id, refresh_token);
-    return createApiResponse(200, 'Admin signed in successfully', response);
+    return createApiResponse(200, 'Admin signed in successfully', { admin });
   }
 
   async handleRefreshToken(res: Response, req: Request) {
