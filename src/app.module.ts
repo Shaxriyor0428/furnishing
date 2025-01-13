@@ -6,6 +6,7 @@ import { AdminModule } from './admin/admin.module';
 import { AuthModule } from './auth/auth.module';
 import { ProductModule } from './product/product.module';
 import { FileModule } from './file/file.module';
+import { CustomerModule } from './customer/customer.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { FileModule } from './file/file.module';
     AuthModule,
     ProductModule,
     FileModule
+    CustomerModule,
   ],
   controllers: [],
   providers: [],

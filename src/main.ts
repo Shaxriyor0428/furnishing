@@ -9,7 +9,7 @@ async function start() {
   const app = await NestFactory.create(AppModule);
 
   app.setGlobalPrefix('/api');
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.use(cookieParser());
 
   app.enableCors({
@@ -17,6 +17,8 @@ async function start() {
       const allowedOrigins = [
         'http://localhost:5173',
         'http://localhost:3001'
+        'http://localhost:3000',
+        // 'http://another-domain.com',
       ];
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
@@ -30,6 +32,7 @@ async function start() {
 
   const config = new DocumentBuilder()
     .setTitle('Furnishings')
+    .addBearerAuth()
     .setDescription(
       'Furnishings is an online platform designed to streamline furniture ordering and management. Users can browse a wide range of furnishings, customize their preferences, track orders, manage delivery schedules, and securely store transaction and user data.',
     )
