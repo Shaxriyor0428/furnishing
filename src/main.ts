@@ -16,8 +16,7 @@ async function start() {
     origin: (origin, callback) => {
       const allowedOrigins = [
         'http://localhost:5173',
-        'http://localhost:3000'
-        // 'http://another-domain.com',
+        'http://localhost:3001'
       ];
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
@@ -29,7 +28,7 @@ async function start() {
     credentials: true,
   });
 
-  const config_swagger = new DocumentBuilder()
+  const config = new DocumentBuilder()
     .setTitle('Furnishings')
     .setDescription(
       'Furnishings is an online platform designed to streamline furniture ordering and management. Users can browse a wide range of furnishings, customize their preferences, track orders, manage delivery schedules, and securely store transaction and user data.',
@@ -38,9 +37,9 @@ async function start() {
     .addTag('Nestjs, TypeOrm, Validation')
     .build();
 
-  const documentFactory = () =>
-    SwaggerModule.createDocument(app, config_swagger);
-  SwaggerModule.setup('api/docs', app, documentFactory);
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('/api/docs', app, document);
+
   await app.listen(PORT, () => console.log(`Server running at port ${PORT}`));
 }
 
