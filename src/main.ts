@@ -16,7 +16,7 @@ async function start() {
     origin: (origin, callback) => {
       const allowedOrigins = [
         'http://localhost:5173',
-        'http://localhost:3000'
+        'http://localhost:3000',
         // 'http://another-domain.com',
       ];
       if (!origin || allowedOrigins.includes(origin)) {
