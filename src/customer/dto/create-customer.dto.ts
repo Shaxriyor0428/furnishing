@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsBoolean,
+  IsEmail,
   IsNotEmpty,
   IsPhoneNumber,
   IsString,
@@ -36,14 +37,11 @@ export class CreateCustomerDto {
     description: 'Customer email',
     example: 'john@gmail.com',
   })
-  @IsPhoneNumber()
+  @IsEmail()
   @IsNotEmpty()
   readonly email: string;
 
-  @ApiProperty({
-    description: 'Customer password',
-    example: 'john@gmail.com',
-  })
+ 
   @ApiProperty({
     description: 'Password for customer account',
     example: 'Strong12',

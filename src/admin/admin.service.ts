@@ -42,7 +42,6 @@ export class AdminService {
     const { page, limit } = paginationDto;
     const total = await this.adminRepo.count();
     const calculatedSkip = (page - 1) * limit;
-
     const admins = await this.adminRepo.find({
       skip: calculatedSkip,
       take: limit,
@@ -60,7 +59,7 @@ export class AdminService {
     if (!admin) {
       throw new NotFoundException(`Admin with id ${id} not found`);
     }
-    return createApiResponse(200, 'Admin retrieved successfully', admin);
+    return createApiResponse(200, 'Admin retrieved successfully', { admin });
   }
 
   async update(id: number, updateAdminDto: UpdateAdminDto) {
@@ -72,7 +71,9 @@ export class AdminService {
     await this.adminRepo.update(id, updateAdminDto);
     const updatedAdmin = await this.adminRepo.findOne({ where: { id } });
 
-    return createApiResponse(200, 'Admin updated successfully', updatedAdmin);
+    return createApiResponse(200, 'Admin updated successfully', {
+      updatedAdmin,
+    });
   }
 
   async remove(id: number) {

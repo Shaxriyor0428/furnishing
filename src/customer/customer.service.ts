@@ -1,32 +1,85 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Customer } from './entities/customer.entity';
 import { Repository } from 'typeorm';
+import { hash } from 'bcrypt';
+import { PaginationDto } from '../admin/dto/pagination.dto';
+import { createApiResponse } from '../common/utils';
 
 @Injectable()
 export class CustomerService {
   constructor(
     @InjectRepository(Customer) private customerRepo: Repository<Customer>,
   ) {}
-  create(createCustomerDto: CreateCustomerDto) {
-    return 'This action adds a new customer';
+  async create(createCustomerDto: CreateCustomerDto) {
+    const existsCustomer = await this.customerRepo.findOneBy({
+      email: createCustomerDto.email,
+    });
+    if (existsCustomer) {
+      throw new BadRequestException('User already exists');
+    }
+    if (createCustomerDto.password !== createCustomerDto.confirm_password) {
+      throw new BadRequestException('Passwords not match');
+    }
+    const hashed_password = await hash(createCustomerDto.password, 7);
+    const customer = await this.customerRepo.save({
+      ...createCustomerDto,
+      hashed_password,
+    });
+    return customer;
   }
 
-  findAll() {
-    return `This action returns all customer`;
+  async findAll(paginationDto: PaginationDto) {
+    const { page, limit } = paginationDto;
+    const total = await this.customerRepo.count();
+    const calculatedSkip = (page - 1) * limit;
+    const customers = await this.customerRepo.find({
+      skip: calculatedSkip,
+      take: limit,
+    });
+    return createApiResponse(200, 'List of admins retrieved successfully', {
+      customers,
+      total,
+      limit,
+      page,
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} customer`;
+  async findOne(id: number) {
+    const customer = await this.customerRepo.findOne({ where: { id } });
+    if (!customer) {
+      throw new NotFoundException(`Admin with id ${id} not found`);
+    }
+    return createApiResponse(200, 'Admin retrieved successfully', { customer });
   }
 
-  update(id: number, updateCustomerDto: UpdateCustomerDto) {
-    return `This action updates a #${id} customer`;
+  async update(id: number, updateCustomerDto: UpdateCustomerDto) {
+    const existingcustomer = await this.customerRepo.findOne({ where: { id } });
+    if (!existingcustomer) {
+      throw new NotFoundException(`Admin with id ${id} not found`);
+    }
+
+    await this.customerRepo.update(id, updateCustomerDto);
+    const updateCustomer = await this.customerRepo.findOne({ where: { id } });
+
+    return createApiResponse(200, 'Admin updated successfully', {
+      updateCustomer,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} customer`;
+  async remove(id: number) {
+    const customer = await this.customerRepo.findOne({ where: { id } });
+    if (!customer) {
+      throw new NotFoundException(`Admin with id ${id} not found`);
+    }
+
+    await this.customerRepo.delete(id);
+    return createApiResponse(200, 'Admin removed successfully');
   }
 }
