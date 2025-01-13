@@ -26,7 +26,7 @@ import { CustomerModule } from './customer/customer.module';
     AdminModule,
     AuthModule,
     ProductModule,
-    FileModule
+    FileModule,
     CustomerModule,
   ],
   controllers: [],
