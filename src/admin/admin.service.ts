@@ -54,6 +54,8 @@ export class AdminService {
     });
   }
 
+  
+
   async findOne(id: number) {
     const admin = await this.adminRepo.findOne({ where: { id } });
     if (!admin) {
