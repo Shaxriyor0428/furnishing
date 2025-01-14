@@ -10,6 +10,7 @@ import { OrderAddressesModule } from './order_addresses/order_addresses.module';
 import { ProductModule } from './product/product.module';
 import { FileModule } from './file/file.module';
 import { CustomerModule } from './customer/customer.module';
+import { ProductDetailModule } from './productDetail/productDetail.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { CustomerModule } from './customer/customer.module';
     ProductModule,
     FileModule,
     CustomerModule,
+    ProductDetailModule
   ],
   controllers: [],
   providers: [],

@@ -7,7 +7,7 @@ export class File {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-
+  
   @Column()
   @IsString()
   @ApiProperty()
