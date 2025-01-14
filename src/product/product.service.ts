@@ -3,7 +3,9 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
+import { PaginationDto } from 'src/admin/dto/pagination.dto';
+
 
 @Injectable()
 export class ProductService {
@@ -16,9 +18,36 @@ export class ProductService {
     return await this.ProductRepo.save(newProduct);
   }
 
-  async findAll() {
-    return await this.ProductRepo.find();
+  async findAll(query: PaginationDto) {
+    const { filter, order = 'asc', page = 1, limit = 10 } = query;
+  
+    const skip = (page - 1) * limit;
+  
+    const where = filter
+      ? [
+          { name: Like(`%${filter}%`) }, 
+          { description: Like(`%${filter}%`) }, 
+        ]
+      : {};
+  
+    const [products, total] = await this.ProductRepo.findAndCount({
+      where,
+      order: {
+        name: order.toUpperCase() === 'ASC' ? 'ASC' : 'DESC', 
+      },
+      skip,
+      take: limit,
+    });
+  
+    return {
+      products,
+      skip,
+      limit,
+      total
+    };
   }
+  
+  
 
   async findOne(id: number) {
     const product = await this.ProductRepo.findOneBy({ id });

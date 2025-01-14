@@ -1,8 +1,9 @@
-import { Controller, Post, Body, Get, Param, Put, Delete } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Controller, Post, Body, Get, Param, Put, Delete, Query } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { PaginationDto } from 'src/admin/dto/pagination.dto';
 
 @ApiTags('Products')
 @Controller('product')
@@ -18,10 +19,29 @@ export class ProductController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all products' })
-  @ApiResponse({ status: 200, description: 'List of products.' })
-  async findAll() {
-    return this.productService.findAll();
+  @ApiOperation({ summary: 'Retrieve all products with optional filtering, sorting, and pagination' })
+  @ApiQuery({ name: 'filter', required: false, description: 'Filter by product name or description' })
+  @ApiQuery({ name: 'order', required: false, enum: ['asc', 'desc'], description: 'Order of sorting' })
+  @ApiQuery({ name: 'page', required: false, description: 'Page number', example: 1 })
+  @ApiQuery({ name: 'limit', required: false, description: 'Items per page', example: 10 })
+  @ApiResponse({ status: 200, description: 'List of products' })
+  async findAll(@Query() query: PaginationDto) {
+    console.log('Received query:', query);
+
+    const { filter, order, page, limit } = query;
+
+    const pageNum = page ? parseInt(page.toString(), 10) : 1;
+    const limitNum = limit ? parseInt(limit.toString(), 10) : 10;
+
+    console.log('Converted pageNum:', pageNum);
+    console.log('Converted limitNum:', limitNum);
+
+    return this.productService.findAll({
+      filter,
+      order,
+      page: pageNum,
+      limit: limitNum,
+    });
   }
 
   @Get(':id')
