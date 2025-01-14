@@ -8,6 +8,7 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
@@ -17,8 +18,9 @@ import { Admin } from './entities/admin.entity';
 import { AdminAccessTokenGuard } from '../common/guards/admin.access-token.guard';
 import { IsCreatorGuard } from '../common/guards/creator.guard';
 import { AdminSelfGuard } from '../common/guards/admin.self.guard';
+import { PaginationDto } from './dto/pagination.dto';
 
-@UseGuards(AdminAccessTokenGuard)
+// @UseGuards(AdminAccessTokenGuard)
 @ApiTags('Admin')
 @Controller('admin')
 export class AdminController {
@@ -29,7 +31,7 @@ export class AdminController {
   //   return this.adminService.create(createAdminDto);
   // }
 
-  @UseGuards(AdminSelfGuard)
+  // @UseGuards(AdminSelfGuard)
   @Get()
   @ApiOperation({ summary: 'Get all admins' })
   @ApiResponse({
@@ -37,11 +39,11 @@ export class AdminController {
     description: 'List of admins',
     type: [Admin],
   })
-  findAll() {
-    return this.adminService.findAll();
+  findAll(@Query() paginationDto:PaginationDto) {
+    return this.adminService.findAll(paginationDto);
   }
 
-  @UseGuards(AdminSelfGuard)
+  // @UseGuards(AdminSelfGuard)
   @Get(':id')
   @ApiOperation({ summary: 'Get admin by ID' })
   @ApiResponse({
@@ -53,6 +55,7 @@ export class AdminController {
     return this.adminService.findOne(+id);
   }
 
+  @UseGuards(AdminSelfGuard)
   @Patch(':id')
   @ApiOperation({ summary: 'Update admin by ID' })
   @HttpCode(HttpStatus.OK)
