@@ -4,6 +4,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { AdminModule } from './admin/admin.module';
 import { AuthModule } from './auth/auth.module';
+import { CartModule } from './cart/cart.module';
+import { CartDetailModule } from './cart_detail/cart_detail.module';
+import { OrderAddressesModule } from './order_addresses/order_addresses.module';
 import { ProductModule } from './product/product.module';
 import { FileModule } from './file/file.module';
 import { CustomerModule } from './customer/customer.module';
@@ -25,6 +28,9 @@ import { CustomerModule } from './customer/customer.module';
     }),
     AdminModule,
     AuthModule,
+    CartModule,
+    CartDetailModule,
+    OrderAddressesModule,
     ProductModule,
     FileModule,
     CustomerModule,
