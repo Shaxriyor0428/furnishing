@@ -54,7 +54,6 @@ export class AdminAuthService {
     const admin = await this.adminService.create(createAdminDto);
     const { access_token, refresh_token } =
       await this.adminGenerateTokens(admin);
-    // console.log(access_token, refresh_token);
 
     if (!access_token && refresh_token) {
       throw new BadRequestException('Token not found');
@@ -63,7 +62,7 @@ export class AdminAuthService {
       httpOnly: true,
       maxAge: +process.env.COOKIE_TIME,
     });
-    const response = {
+    const newAdmin = {
       id: admin.id,
       access_token,
       email: admin.email,
@@ -73,7 +72,7 @@ export class AdminAuthService {
     };
 
     await this.updateRefreshToken(admin.id, refresh_token);
-    return createApiResponse(201, 'Admin added successfully', response);
+    return createApiResponse(201, 'Admin added successfully', { newAdmin });
   }
 
   async adminSignIn(res: Response, adminSignInDto: AdminSignInDto) {
@@ -97,7 +96,7 @@ export class AdminAuthService {
       access_token,
     };
     await this.updateRefreshToken(admin.id, refresh_token);
-    return createApiResponse(200, 'Admin signed in successfully', { admin });
+    return createApiResponse(200, 'Admin signed in successfully', response);
   }
 
   async handleRefreshToken(res: Response, req: Request) {
@@ -109,6 +108,7 @@ export class AdminAuthService {
     if (!admin || !admin.hashed_refresh_token) {
       throw new BadRequestException('Admin not found');
     }
+    
     const rMatchesh = await compare(refreshToken, admin.hashed_refresh_token);
     if (!rMatchesh) {
       throw new ForbiddenException('Access denied');
@@ -147,7 +147,6 @@ export class AdminAuthService {
     }
 
     res.clearCookie('admin_refresh_token');
-
     return createApiResponse(200, 'Admin signout successfully', {
       id: adminId,
     });

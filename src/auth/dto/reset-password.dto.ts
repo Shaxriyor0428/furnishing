@@ -1,38 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsBoolean,
-  IsEmail,
-  IsNotEmpty,
-  IsPhoneNumber,
-  IsString,
-  IsStrongPassword,
-} from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, IsStrongPassword, Length, Matches } from 'class-validator';
 
-export class CreateCustomerDto {
-  @ApiProperty({
-    description: 'Customer first name',
-    example: 'John',
-  })
-  @IsString()
-  @IsNotEmpty()
-  readonly first_name: string;
-
-  @ApiProperty({
-    description: 'Customer last name',
-    example: 'Doe',
-  })
-  @IsString()
-  @IsNotEmpty()
-  readonly last_name: string;
-
-  @ApiProperty({
-    description: 'Customer phone number',
-    example: '+998931631621',
-  })
-  @IsPhoneNumber()
-  @IsNotEmpty()
-  readonly phone_number: string;
-
+export class ResetPasswordDto {
   @ApiProperty({
     description: 'Customer email',
     example: 'john@gmail.com',
@@ -41,7 +10,6 @@ export class CreateCustomerDto {
   @IsNotEmpty()
   readonly email: string;
 
- 
   @ApiProperty({
     description: 'Password for customer account',
     example: 'Strong12',
