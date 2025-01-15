@@ -24,7 +24,7 @@ export class OrderAddressesService {
 
   async findAll() {
     const orderAddresses = await this.orderAddressRepo.find({
-      relations: [], // ['orders', 'customer']
+      relations: ['customer'], // ['orders', 'customer']
     });
     return createApiResponse(
       200,

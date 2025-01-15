@@ -21,7 +21,10 @@ import { Customer } from './entities/customer.entity';
 @Controller('customer')
 export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
-
+  @Post()
+  create(@Body() createCustomerDto: CreateCustomerDto) {
+    return this.customerService.create(createCustomerDto);
+  }
   @Get()
   @ApiOperation({ summary: 'Get all customers' })
   @ApiResponse({

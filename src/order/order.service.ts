@@ -6,13 +6,24 @@ import { Order } from './entities/order.entity';
 import { Repository } from 'typeorm';
 import { createApiResponse } from '../common/utils';
 import { PaginationDto } from '../admin/dto/pagination.dto';
+import { Customer } from '../customer/entities/customer.entity';
 
 @Injectable()
 export class OrderService {
   constructor(
     @InjectRepository(Order) private readonly orderRepo: Repository<Order>,
+    @InjectRepository(Customer)
+    private readonly customerRepo: Repository<Customer>,
   ) {}
   async create(createOrderDto: CreateOrderDto) {
+    const customer = await this.customerRepo.findOne({
+      where: { id: createOrderDto.customerId },
+    });
+    if (!customer) {
+      throw new NotFoundException(
+        `Customer with id ${createOrderDto.customerId} not found`,
+      );
+    }
     const newOrder = this.orderRepo.create(createOrderDto);
     await this.orderRepo.save(newOrder);
     return createApiResponse(201, 'Order created successfully', { newOrder });
@@ -23,7 +34,7 @@ export class OrderService {
     const calculatedSkip = (page - 1) * limit;
     const total = await this.orderRepo.count();
     const order = await this.orderRepo.find({
-      relations: ['orderDetails'], // ['orderAddress', 'customer']
+      relations: ['order_address', 'customer'], // ['orderAddress', 'customer']
       skip: calculatedSkip,
       take: limit,
     });
