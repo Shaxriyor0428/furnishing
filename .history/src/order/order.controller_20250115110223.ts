@@ -8,14 +8,12 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
-  Query,
 } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Order } from './entities/order.entity';
-import { PaginationDto } from '../admin/dto/pagination.dto';
 
 @ApiTags('Order')
 @Controller('order')
@@ -34,8 +32,8 @@ export class OrderController {
     description: 'List of orders',
     type: [Order],
   })
-  findAll(@Query() paginationDto: PaginationDto) {
-    return this.orderService.findAll(paginationDto);
+  findAll(@) {
+    return this.orderService.findAll();
   }
 
   @Get(':id')

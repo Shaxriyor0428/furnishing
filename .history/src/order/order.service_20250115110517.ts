@@ -24,15 +24,12 @@ export class OrderService {
     const total = await this.orderRepo.count();
     const order = await this.orderRepo.find({
       relations: ['orderDetails'], // ['orderAddress', 'customer']
-      skip: calculatedSkip,
-      take: limit,
     });
-    return createApiResponse(200, 'List of orders retrieved successfully', {
+    return createApiResponse(
+      200,
+      'List of orders retrieved successfully',
       order,
-      total,
-      limit,
-      page,
-    });
+    );
   }
 
   async findOne(id: number) {

@@ -29,9 +29,6 @@ export class OrderService {
     });
     return createApiResponse(200, 'List of orders retrieved successfully', {
       order,
-      total,
-      limit,
-      page,
     });
   }
 

@@ -5,7 +5,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from './entities/order.entity';
 import { Repository } from 'typeorm';
 import { createApiResponse } from '../common/utils';
-import { PaginationDto } from '../admin/dto/pagination.dto';
 
 @Injectable()
 export class OrderService {
@@ -15,24 +14,18 @@ export class OrderService {
   async create(createOrderDto: CreateOrderDto) {
     const newOrder = this.orderRepo.create(createOrderDto);
     await this.orderRepo.save(newOrder);
-    return createApiResponse(201, 'Order created successfully', { newOrder });
+    return createApiResponse(201, 'Order created successfully', {newOrder});
   }
 
-  async findAll(paginationDto: PaginationDto) {
-    const { limit, page } = paginationDto;
-    const calculatedSkip = (page - 1) * limit;
-    const total = await this.orderRepo.count();
+  async findAll(paginationDto) {
     const order = await this.orderRepo.find({
       relations: ['orderDetails'], // ['orderAddress', 'customer']
-      skip: calculatedSkip,
-      take: limit,
     });
-    return createApiResponse(200, 'List of orders retrieved successfully', {
+    return createApiResponse(
+      200,
+      'List of orders retrieved successfully',
       order,
-      total,
-      limit,
-      page,
-    });
+    );
   }
 
   async findOne(id: number) {

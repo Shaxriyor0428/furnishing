@@ -27,12 +27,11 @@ export class OrderService {
       skip: calculatedSkip,
       take: limit,
     });
-    return createApiResponse(200, 'List of orders retrieved successfully', {
-      order,
-      total,
-      limit,
-      page,
-    });
+    return createApiResponse(
+      200,
+      'List of orders retrieved successfully',
+      {order,
+    );
   }
 
   async findOne(id: number) {

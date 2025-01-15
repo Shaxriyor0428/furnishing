@@ -10,9 +10,9 @@ import {
 import { OrderStatus } from '../../common/types/order_status';
 import { OrderDetail } from '../../order_detail/entities/order_detail.entity';
 import { Payment } from '../../payment/entities/payment.entity';
-// import { Customer } from '../../customer/entities/customer.entity';
-// import { OrderAddress } from '../../order_addresses/entities/order_address.entity';
-// import { OrderAddressesController } from '../../order_addresses/order_addresses.controller';
+import { Customer } from '../../customer/entities/customer.entity';
+import { OrderAddress } from '../../order_addresses/entities/order_address.entity';
+import { OrderAddressesController } from '../../order_addresses/order_addresses.controller';
 
 @Entity('order')
 export class Order {
@@ -46,6 +46,6 @@ export class Order {
 
   // @ManyToOne(() => OrderAddress, (orderAddress) => orderAddress.order)
   // @JoinColumn({ name: 'orderAddressId' })
-  // orderAddress: OrderAddress; ///OrderAddressga bog'lanish joyi
+  // orderAddress: OrderAddress; ///OrderAddressga bog'lanishi
 
 }

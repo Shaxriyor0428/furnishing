@@ -35,7 +35,7 @@ export class OrderController {
     type: [Order],
   })
   findAll(@Query() paginationDto: PaginationDto) {
-    return this.orderService.findAll(paginationDto);
+    return this.orderService.findAll();
   }
 
   @Get(':id')
