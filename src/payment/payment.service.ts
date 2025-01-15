@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Payment } from './entities/payment.entity';
 import { createApiResponse } from '../common/utils';
 import { Repository } from 'typeorm';
+import { PaginationDto } from '../admin/dto/pagination.dto';
 
 @Injectable()
 export class PaymentService {
@@ -15,17 +16,25 @@ export class PaymentService {
   async create(createPaymentDto: CreatePaymentDto) {
     const newPayment = this.paymentRepo.create(createPaymentDto);
     await this.paymentRepo.save(newPayment);
-    return createApiResponse(201, 'Payment created successfully', newPayment);
+    return createApiResponse(201, 'Payment created successfully', {
+      newPayment,
+    });
   }
-  async findAll() {
+  async findAll(paginationDto: PaginationDto) {
+    const { limit, page } = paginationDto;
+    const calculatedSkip = (page - 1) * limit;
+    const total = await this.paymentRepo.count();
     const payment = await this.paymentRepo.find({
       relations: ['order'], // ['orders']
+      skip: calculatedSkip,
+      take: limit,
     });
-    return createApiResponse(
-      200,
-      'List of payment retrieved successfully',
+    return createApiResponse(200, 'List of payment retrieved successfully', {
       payment,
-    );
+      total,
+      limit,
+      page,
+    });
   }
   async findOne(id: number) {
     const payment = await this.paymentRepo.findOne({ where: { id } });
@@ -35,7 +44,7 @@ export class PaymentService {
     return createApiResponse(
       200,
       `Payment with id ${id} retrieved successfully`,
-      payment,
+      { payment },
     );
   }
 
@@ -52,11 +61,9 @@ export class PaymentService {
       where: { id },
     });
 
-    return createApiResponse(
-      200,
-      'Payment updated successfully',
+    return createApiResponse(200, 'Payment updated successfully', {
       updatedPayment,
-    );
+    });
   }
 
   async remove(id: number) {

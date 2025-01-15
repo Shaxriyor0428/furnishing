@@ -8,12 +8,14 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Payment } from './entities/payment.entity';
+import { PaginationDto } from '../admin/dto/pagination.dto';
 
 @ApiTags('payment')
 @Controller('payment')
@@ -32,8 +34,8 @@ export class PaymentController {
     description: 'List of payment details',
     type: [Payment],
   })
-  findAll() {
-    return this.paymentService.findAll();
+  findAll(@Query() paginationDto: PaginationDto) {
+    return this.paymentService.findAll(paginationDto);
   }
 
   @Get(':id')

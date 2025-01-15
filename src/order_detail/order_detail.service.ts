@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { OrderDetail } from './entities/order_detail.entity';
 import { Repository } from 'typeorm';
 import { createApiResponse } from '../common/utils';
+import { PaginationDto } from '../admin/dto/pagination.dto';
 
 @Injectable()
 export class OrderDetailService {
@@ -15,21 +16,29 @@ export class OrderDetailService {
   async create(createOrderDetailDto: CreateOrderDetailDto) {
     const newOrderDetail = this.orderDetailRepo.create(createOrderDetailDto);
     await this.orderDetailRepo.save(newOrderDetail);
-    return createApiResponse(
-      201,
-      'Order-Detail created successfully',
+    return createApiResponse(201, 'Order-Detail created successfully', {
       newOrderDetail,
-    );
+    });
   }
 
-  async findAll() {
+  async findAll(paginationDto: PaginationDto) {
+    const { limit, page } = paginationDto;
+    const calculatedSkip = (page - 1) * limit;
+    const total = await this.orderDetailRepo.count();
     const orderDetail = await this.orderDetailRepo.find({
       relations: ['order'], // ['orders', 'product']
+      skip: calculatedSkip,
+      take: limit,
     });
     return createApiResponse(
       200,
       'List of order-detail retrieved successfully',
-      orderDetail,
+      {
+        orderDetail,
+        total,
+        limit,
+        page,
+      },
     );
   }
 
@@ -41,7 +50,7 @@ export class OrderDetailService {
     return createApiResponse(
       200,
       `Order-Detail with id ${id} retrieved successfully`,
-      orderDetail,
+      { orderDetail },
     );
   }
 
@@ -58,11 +67,9 @@ export class OrderDetailService {
       where: { id },
     });
 
-    return createApiResponse(
-      200,
-      'Order-Detail updated successfully',
+    return createApiResponse(200, 'Order-Detail updated successfully', {
       updatedOrderDetail,
-    );
+    });
   }
 
   async remove(id: number) {

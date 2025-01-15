@@ -8,12 +8,14 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
 import { OrderDetailService } from './order_detail.service';
 import { CreateOrderDetailDto } from './dto/create-order_detail.dto';
 import { UpdateOrderDetailDto } from './dto/update-order_detail.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { OrderDetail } from './entities/order_detail.entity';
+import { PaginationDto } from '../admin/dto/pagination.dto';
 
 @ApiTags('OrderDetail')
 @Controller('order-detail')
@@ -32,8 +34,8 @@ export class OrderDetailController {
     description: 'List of order details',
     type: [OrderDetail],
   })
-  findAll() {
-    return this.orderDetailService.findAll();
+  findAll(@Query() paginationDto: PaginationDto) {
+    return this.orderDetailService.findAll(paginationDto);
   }
 
   @Get(':id')
