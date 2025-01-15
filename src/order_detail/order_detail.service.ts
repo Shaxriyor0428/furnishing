@@ -26,7 +26,7 @@ export class OrderDetailService {
     const calculatedSkip = (page - 1) * limit;
     const total = await this.orderDetailRepo.count();
     const orderDetail = await this.orderDetailRepo.find({
-      relations: ['order'], // ['orders', 'product']
+      relations: ['order', 'product'], 
       skip: calculatedSkip,
       take: limit,
     });

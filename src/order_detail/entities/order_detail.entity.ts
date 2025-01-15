@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Order } from '../../order/entities/order.entity';
+import { Product } from '../../product/entities/product.entity';
 
 @Entity('order_detail')
 export class OrderDetail {
@@ -28,4 +29,9 @@ export class OrderDetail {
   @ManyToOne(() => Order, (order) => order.orderDetails)
   @JoinColumn({ name: 'orderId' })
   order: Order;
+
+  @ManyToOne(() => Product, (product) => product.orderDetails, {
+    nullable: true,
+  })
+  product: Product;
 }
