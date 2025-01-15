@@ -43,7 +43,7 @@ export class OrderService {
     return createApiResponse(
       200,
       `Order with id ${id} retrieved successfully`,
-      order,
+      { order },
     );
   }
 
@@ -60,7 +60,9 @@ export class OrderService {
       where: { id },
     });
 
-    return createApiResponse(200, 'Order updated successfully', updatedOrder);
+    return createApiResponse(200, 'Order updated successfully', {
+      updatedOrder,
+    });
   }
 
   async remove(id: number) {
