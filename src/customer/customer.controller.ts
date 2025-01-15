@@ -10,7 +10,6 @@ import {
   HttpCode,
 } from '@nestjs/common';
 import { CustomerService } from './customer.service';
-import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PaginationDto } from '../admin/dto/pagination.dto';
@@ -20,10 +19,7 @@ import { Customer } from './entities/customer.entity';
 @Controller('customer')
 export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
-  @Post()
-  create(@Body() createCustomerDto: CreateCustomerDto) {
-    return this.customerService.create(createCustomerDto);
-  }
+
   @Get()
   @ApiOperation({ summary: 'Get all customers' })
   @ApiResponse({

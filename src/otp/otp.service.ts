@@ -11,9 +11,9 @@ import { Repository } from 'typeorm';
 import { Customer } from '../customer/entities/customer.entity';
 import * as NodeCache from 'node-cache';
 import { generate } from 'otp-generator';
-import { AddMinutesToDate } from '../helpers/add-minute';
+import { AddMinutesToDate } from '../common/helpers/add-minute';
 import * as uuid from 'uuid';
-import { decode, encode } from '../helpers/crypto';
+import { decode, encode } from '../common/helpers/crypto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { MailService } from '../mail/mail.service';
 
