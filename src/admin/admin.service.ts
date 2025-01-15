@@ -10,6 +10,7 @@ import { Admin } from './entities/admin.entity';
 import { Repository } from 'typeorm';
 import { hash } from 'bcrypt';
 import { createApiResponse } from '../common/utils';
+import { PaginationDto } from './dto/pagination.dto';
 
 @Injectable()
 export class AdminService {
@@ -37,21 +38,30 @@ export class AdminService {
     return newAdmin;
   }
 
-  async findAll() {
-    const admins = await this.adminRepo.find();
-    return createApiResponse(
-      200,
-      'List of admins retrieved successfully',
+  async findAll(paginationDto: PaginationDto) {
+    const { page, limit } = paginationDto;
+    const total = await this.adminRepo.count();
+    const calculatedSkip = (page - 1) * limit;
+    const admins = await this.adminRepo.find({
+      skip: calculatedSkip,
+      take: limit,
+    });
+    return createApiResponse(200, 'List of admins retrieved successfully', {
       admins,
-    );
+      total,
+      limit,
+      page,
+    });
   }
+
+  
 
   async findOne(id: number) {
     const admin = await this.adminRepo.findOne({ where: { id } });
     if (!admin) {
       throw new NotFoundException(`Admin with id ${id} not found`);
     }
-    return createApiResponse(200, 'Admin retrieved successfully', admin);
+    return createApiResponse(200, 'Admin retrieved successfully', { admin });
   }
 
   async update(id: number, updateAdminDto: UpdateAdminDto) {
@@ -63,7 +73,9 @@ export class AdminService {
     await this.adminRepo.update(id, updateAdminDto);
     const updatedAdmin = await this.adminRepo.findOne({ where: { id } });
 
-    return createApiResponse(200, 'Admin updated successfully', updatedAdmin);
+    return createApiResponse(200, 'Admin updated successfully', {
+      updatedAdmin,
+    });
   }
 
   async remove(id: number) {
