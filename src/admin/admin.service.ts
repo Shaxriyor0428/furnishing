@@ -41,7 +41,8 @@ export class AdminService {
   async findAll(paginationDto: PaginationDto) {
     const { page, limit } = paginationDto;
     const total = await this.adminRepo.count();
-    const calculatedSkip = (page - 1) * limit;
+    
+    const calculatedSkip = (page - 1) * limit;    
     const admins = await this.adminRepo.find({
       skip: calculatedSkip,
       take: limit,
