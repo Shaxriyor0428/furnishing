@@ -15,10 +15,15 @@ import { ProductDetailModule } from './productDetail/productDetail.module';
 import { OrderModule } from './order/order.module';
 import { OrderDetailModule } from './order_detail/order_detail.module';
 import { PaymentModule } from './payment/payment.module';
+import { MailModule } from './mail/mail.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { OtpModule } from './otp/otp.module';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
+    CacheModule.register({ isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.PG_HOST,
@@ -31,6 +36,10 @@ import { PaymentModule } from './payment/payment.module';
       logging: true,
       autoLoadEntities: true,
     }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', '..', 'uploads'),
+    }),
+
     AdminModule,
     AuthModule,
 
@@ -45,6 +54,8 @@ import { PaymentModule } from './payment/payment.module';
     FileModule,
     CustomerModule,
     ProductDetailModule,
+    MailModule,
+    OtpModule,
   ],
   controllers: [],
   providers: [],

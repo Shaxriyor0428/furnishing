@@ -14,7 +14,6 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateAdminDto } from '../../admin/dto/create-admin.dto';
 import { Request, Response } from 'express';
 import { AdminSignInDto } from '../dto/admin-signin.dto';
-import { RefreshTokenFromCookie } from '../../common/decorator/refresh-token';
 import { AdminRefreshTokenGuard } from '../../common/guards/admin-refresh-token.guard';
 import { IsCreatorGuard } from '../../common/guards/creator.guard';
 
