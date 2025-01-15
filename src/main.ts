@@ -9,14 +9,15 @@ async function start() {
   const app = await NestFactory.create(AppModule);
 
   app.setGlobalPrefix('/api');
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.use(cookieParser());
 
   app.enableCors({
     origin: (origin, callback) => {
       const allowedOrigins = [
         'http://localhost:5173',
-        'http://localhost:3000'
+        'http://localhost:3001',
+        'http://localhost:3000',
         // 'http://another-domain.com',
       ];
       if (!origin || allowedOrigins.includes(origin)) {
@@ -29,8 +30,9 @@ async function start() {
     credentials: true,
   });
 
-  const config_swagger = new DocumentBuilder()
+  const config = new DocumentBuilder()
     .setTitle('Furnishings')
+    .addBearerAuth()
     .setDescription(
       'Furnishings is an online platform designed to streamline furniture ordering and management. Users can browse a wide range of furnishings, customize their preferences, track orders, manage delivery schedules, and securely store transaction and user data.',
     )
@@ -38,9 +40,9 @@ async function start() {
     .addTag('Nestjs, TypeOrm, Validation')
     .build();
 
-  const documentFactory = () =>
-    SwaggerModule.createDocument(app, config_swagger);
-  SwaggerModule.setup('api/docs', app, documentFactory);
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('/api/docs', app, document);
+
   await app.listen(PORT, () => console.log(`Server running at port ${PORT}`));
 }
 

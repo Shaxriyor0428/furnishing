@@ -7,13 +7,20 @@ import { AuthModule } from './auth/auth.module';
 import { OrderModule } from './order/order.module';
 import { OrderDetailModule } from './order_detail/order_detail.module';
 import { PaymentModule } from './payment/payment.module';
+import { CartModule } from './cart/cart.module';
+import { CartDetailModule } from './cart_detail/cart_detail.module';
+import { OrderAddressesModule } from './order_addresses/order_addresses.module';
+import { ProductModule } from './product/product.module';
+import { FileModule } from './file/file.module';
+import { CustomerModule } from './customer/customer.module';
+import { ProductDetailModule } from './productDetail/productDetail.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.HOST,
+      host: process.env.PG_HOST,
       port: +process.env.PG_PORT,
       username: process.env.PG_USER,
       password: process.env.PG_PASS,
@@ -28,6 +35,13 @@ import { PaymentModule } from './payment/payment.module';
     OrderModule,
     OrderDetailModule,
     PaymentModule,
+    CartModule,
+    CartDetailModule,
+    OrderAddressesModule,
+    ProductModule,
+    FileModule,
+    CustomerModule,
+    ProductDetailModule
   ],
   controllers: [],
   providers: [],
