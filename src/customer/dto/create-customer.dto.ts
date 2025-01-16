@@ -52,7 +52,7 @@ export class CreateCustomerDto {
     minLength: 4,
     minUppercase: 1,
     minLowercase: 1,
-    minNumbers: 0,
+    minNumbers: 1,
     minSymbols: 0,
   })
   readonly password: string;
@@ -67,7 +67,7 @@ export class CreateCustomerDto {
     minLength: 4,
     minUppercase: 1,
     minLowercase: 1,
-    minNumbers: 0,
+    minNumbers: 1,
     minSymbols: 0,
   })
   readonly confirm_password: string;

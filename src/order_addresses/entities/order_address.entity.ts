@@ -6,6 +6,8 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Order } from '../../order/entities/order.entity';
+import { Customer } from '../../customer/entities/customer.entity';
 
 @Entity('order_addresses')
 export class OrderAddress {
@@ -30,10 +32,10 @@ export class OrderAddress {
   @Column({ type: 'varchar', nullable: true })
   additional_information?: string;
 
-  // @OneToMany(() => Order, (order) => order.order_address)
-  // orders: Order[];
+  @OneToMany(() => Order, (order) => order.order_address)
+  orders: Order[];
 
-  // @ManyToOne(() => Customer, (customer) => customer.order_addresses)
-  // @JoinColumn({ name: 'customer_id' })
-  // customer: Customer;
+  @ManyToOne(() => Customer, (customer) => customer.order_addresses)
+  @JoinColumn({ name: 'customer_id' })
+  customer: Customer;
 }

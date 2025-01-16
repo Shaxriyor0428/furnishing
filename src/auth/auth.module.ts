@@ -7,12 +7,17 @@ import { AdminAuthController } from './admin-auth/admin.auth.controller';
 import { CustomerAuthController } from './customer-auth/customer.auth.controller';
 import { AdminAuthService } from './admin-auth/admin.auth.service';
 import { CustomerAuthService } from './customer-auth/customer.auth.service';
+import { Customer } from '../customer/entities/customer.entity';
+import { CustomerModule } from '../customer/customer.module';
+import { MailModule } from '../mail/mail.module';
 
 @Module({
   imports: [
     AdminModule,
     JwtModule.register({}),
-    TypeOrmModule.forFeature([Admin]),
+    TypeOrmModule.forFeature([Admin, Customer]),
+    CustomerModule,
+    MailModule,
   ],
   controllers: [AdminAuthController, CustomerAuthController],
   providers: [AdminAuthService, CustomerAuthService],

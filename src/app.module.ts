@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { AdminModule } from './admin/admin.module';
 import { AuthModule } from './auth/auth.module';
+
 import { CartModule } from './cart/cart.module';
 import { CartDetailModule } from './cart_detail/cart_detail.module';
 import { OrderAddressesModule } from './order_addresses/order_addresses.module';
@@ -11,10 +12,20 @@ import { ProductModule } from './product/product.module';
 import { FileModule } from './file/file.module';
 import { CustomerModule } from './customer/customer.module';
 import { ProductDetailModule } from './productDetail/productDetail.module';
+import { OrderModule } from './order/order.module';
+import { OrderDetailModule } from './order_detail/order_detail.module';
+import { PaymentModule } from './payment/payment.module';
+import { MailModule } from './mail/mail.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { OtpModule } from './otp/otp.module';
+import { CacheModule } from '@nestjs/cache-manager';
+import { LikeModule } from './like/like.module';
+import { ReviewModule } from './review/review.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
+    CacheModule.register({ isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.PG_HOST,
@@ -27,15 +38,28 @@ import { ProductDetailModule } from './productDetail/productDetail.module';
       logging: true,
       autoLoadEntities: true,
     }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', '..', 'uploads'),
+    }),
+
     AdminModule,
     AuthModule,
+
+    OrderModule,
+    OrderDetailModule,
+    PaymentModule,
+
     CartModule,
     CartDetailModule,
     OrderAddressesModule,
     ProductModule,
     FileModule,
     CustomerModule,
-    ProductDetailModule
+    ProductDetailModule,
+    MailModule,
+    OtpModule,
+    LikeModule,
+    ReviewModule,
   ],
   controllers: [],
   providers: [],

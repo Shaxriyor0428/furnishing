@@ -26,9 +26,9 @@ export class OrderAddressesService {
     const total = await this.orderAddressRepo.count();
     const calculatedSkip = (page - 1) * limit;
     const orderAddresses = await this.orderAddressRepo.find({
-      relations: [], // ['orders', 'customer']
       skip: calculatedSkip,
       take: limit,
+      relations: ['customer'], // ['orders', 'customer']
     });
     return createApiResponse(
       200,
