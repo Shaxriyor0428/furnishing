@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Cart } from './entities/cart.entity';
 import { Repository } from 'typeorm';
 import { createApiResponse } from '../common/utils';
+import { PaginationDto } from '../admin/dto/pagination.dto';
 
 @Injectable()
 export class CartService {
@@ -14,16 +15,24 @@ export class CartService {
   async create(createCartDto: CreateCartDto) {
     const newCart = this.cartRepo.create(createCartDto);
     await this.cartRepo.save(newCart);
-    return createApiResponse(201, 'Cart created successfully', newCart);
+    return createApiResponse(201, 'Cart created successfully', { newCart });
   }
 
-  async findAll() {
-    const carts = await this.cartRepo.find({ relations: ['cart_details'] }); // ['customer']
-    return createApiResponse(
-      200,
-      'List of carts retrieved successfully',
+  async findAll(paginationDto: PaginationDto) {
+    const { page, limit } = paginationDto;
+    const total = await this.cartRepo.count();
+    const calculatedSkip = (page - 1) * limit;
+    const carts = await this.cartRepo.find({
+      relations: ['cart_details'],
+      skip: calculatedSkip,
+      take: limit,
+    }); // ['customer']
+    return createApiResponse(200, 'List of carts retrieved successfully', {
       carts,
-    );
+      total,
+      limit,
+      page,
+    });
   }
 
   async findOne(id: number) {
@@ -31,11 +40,9 @@ export class CartService {
     if (!cart) {
       throw new NotFoundException(`Cart with id ${id} not found`);
     }
-    return createApiResponse(
-      200,
-      `Cart with id ${id} retrieved successfully`,
+    return createApiResponse(200, `Cart with id ${id} retrieved successfully`, {
       cart,
-    );
+    });
   }
 
   async update(id: number, updateCartDto: UpdateCartDto) {
@@ -47,7 +54,7 @@ export class CartService {
     await this.cartRepo.update(id, updateCartDto);
     const updatedCart = await this.cartRepo.findOne({ where: { id } });
 
-    return createApiResponse(200, 'Cart updated successfully', updatedCart);
+    return createApiResponse(200, 'Cart updated successfully', { updatedCart });
   }
 
   async remove(id: number) {

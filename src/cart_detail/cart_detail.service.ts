@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CartDetail } from './entities/cart_detail.entity';
 import { Repository } from 'typeorm';
 import { createApiResponse } from '../common/utils';
+import { PaginationDto } from '../admin/dto/pagination.dto';
 
 @Injectable()
 export class CartDetailService {
@@ -15,19 +16,24 @@ export class CartDetailService {
   async create(createCartDetailDto: CreateCartDetailDto) {
     const newCartDetail = this.cartDetailRepo.create(createCartDetailDto);
     await this.cartDetailRepo.save(newCartDetail);
-    return createApiResponse(
-      201,
-      'Cart-Detail created successfully',
+    return createApiResponse(201, 'Cart-Detail created successfully', {
       newCartDetail,
-    );
+    });
   }
 
-  async findAll() {
-    const cartDetails = await this.cartDetailRepo.find({ relations: ['cart'] }); // ['product']
+  async findAll(paginationDto: PaginationDto) {
+    const { page, limit } = paginationDto;
+    const total = await this.cartDetailRepo.count();
+    const calculatedSkip = (page - 1) * limit;
+    const cartDetails = await this.cartDetailRepo.find({
+      relations: ['cart'],
+      skip: calculatedSkip,
+      take: limit,
+    }); // ['product']
     return createApiResponse(
       200,
       'List of cart-details retrieved successfully',
-      cartDetails,
+      { cartDetails, total, limit, page },
     );
   }
 
@@ -39,7 +45,7 @@ export class CartDetailService {
     return createApiResponse(
       200,
       `Cart-Detail with id ${id} retrieved successfully`,
-      cartDetail,
+      { cartDetail },
     );
   }
 
@@ -56,11 +62,9 @@ export class CartDetailService {
       where: { id },
     });
 
-    return createApiResponse(
-      200,
-      'Cart-Detail updated successfully',
+    return createApiResponse(200, 'Cart-Detail updated successfully', {
       updatedCartDetail,
-    );
+    });
   }
 
   async remove(id: number) {
