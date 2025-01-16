@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsInt,
   IsString,
@@ -14,7 +15,8 @@ export class CreateProductDto {
     description: 'ID of the category the product belongs to',
     example: 101,
   })
-  @IsInt({ message: 'Category ID must be an integer.' })
+  @IsNumber()
+  @Type(() => Number)
   categoryId: number;
 
   @ApiProperty({
@@ -36,16 +38,19 @@ export class CreateProductDto {
   description: string;
 
   @ApiProperty({ description: 'Price of the product', example: 199 })
-  @IsNumber({}, { message: 'Price must be a number.' })
+  @IsNumber()
   @Min(0, { message: 'Price must be at least 0.' })
+  @Type(() => Number)
   price: number;
 
   @ApiProperty({ description: 'Average rating of the product', example: 5 })
+  @Type(() => Number)
   @IsInt({ message: 'Average rating must be an integer.' })
   @Min(0, { message: 'Average rating must be at least 0.' })
   averageRating: number;
 
   @ApiProperty({ description: 'Stock quantity of the product', example: 50 })
+  @Type(() => Number)
   @IsInt({ message: 'Stock must be an integer.' })
   @Min(0, { message: 'Stock must be at least 0.' })
   stock: number;

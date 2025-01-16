@@ -15,9 +15,7 @@ export class ProductService {
 
   async create(createProductDto: CreateProductDto) {
     const product = await this.ProductRepo.save(createProductDto);
-    return createApiResponse(201, 'Product created successfully', {
-      newProduct: product,
-    });
+    return createApiResponse(201, 'Product created successfully', { product });
   }
 
   async findAll(query: PaginationDto) {
