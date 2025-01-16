@@ -7,6 +7,8 @@ import {
   OneToMany,
 } from 'typeorm';
 import { OrderDetail } from '../../order_detail/entities/order_detail.entity';
+import { Likes } from '../../like/entities/like.entity';
+import { Review } from '../../review/entities/review.entity';
 
 @Entity('product')
 export class Product {
@@ -48,4 +50,10 @@ export class Product {
 
   @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.product)
   orderDetails: OrderDetail[];
+
+  @OneToMany(() => Likes, (like) => like.product)
+  likes: Likes[];
+
+  @OneToMany(() => Review, (review) => review.product)
+  reviews: Review[];
 }
