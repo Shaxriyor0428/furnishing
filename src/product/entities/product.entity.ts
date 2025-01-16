@@ -32,10 +32,10 @@ export class Product {
   stock: number;
 
   @Column({ type: 'simple-array', nullable: true })
-  color: string[];
+  colors: string[];
 
-  @Column({ type: 'varchar', length: 255 })
-  SKU: string;
+  @Column({ type: 'varchar' })
+  sku: string;
 
   @Column({ type: 'simple-array', nullable: true })
   tags: string[];
