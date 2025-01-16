@@ -19,6 +19,8 @@ import { MailModule } from './mail/mail.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { OtpModule } from './otp/otp.module';
 import { CacheModule } from '@nestjs/cache-manager';
+import { LikeModule } from './like/like.module';
+import { ReviewModule } from './review/review.module';
 
 @Module({
   imports: [
@@ -56,6 +58,8 @@ import { CacheModule } from '@nestjs/cache-manager';
     ProductDetailModule,
     MailModule,
     OtpModule,
+    LikeModule,
+    ReviewModule,
   ],
   controllers: [],
   providers: [],
