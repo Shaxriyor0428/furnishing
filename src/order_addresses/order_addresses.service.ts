@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { OrderAddress } from './entities/order_address.entity';
 import { Repository } from 'typeorm';
 import { createApiResponse } from '../common/utils';
+import { PaginationDto } from '../admin/dto/pagination.dto';
 
 @Injectable()
 export class OrderAddressesService {
@@ -15,21 +16,24 @@ export class OrderAddressesService {
   async create(createOrderAddressDto: CreateOrderAddressDto) {
     const newOrderAddress = this.orderAddressRepo.create(createOrderAddressDto);
     await this.orderAddressRepo.save(newOrderAddress);
-    return createApiResponse(
-      201,
-      'Order-Address created successfully',
+    return createApiResponse(201, 'Order-Address created successfully', {
       newOrderAddress,
-    );
+    });
   }
 
-  async findAll() {
+  async findAll(paginationDto: PaginationDto) {
+    const { page, limit } = paginationDto;
+    const total = await this.orderAddressRepo.count();
+    const calculatedSkip = (page - 1) * limit;
     const orderAddresses = await this.orderAddressRepo.find({
-      relations: [], // ['orders', 'customer']
+      skip: calculatedSkip,
+      take: limit,
+      relations: ['customer'], // ['orders', 'customer']
     });
     return createApiResponse(
       200,
       'List of order-addresses retrieved successfully',
-      orderAddresses,
+      { orderAddresses, total, limit, page },
     );
   }
 
@@ -41,7 +45,7 @@ export class OrderAddressesService {
     return createApiResponse(
       200,
       `Order-Address with id ${id} retrieved successfully`,
-      orderAddress,
+      { orderAddress },
     );
   }
 
@@ -58,11 +62,9 @@ export class OrderAddressesService {
       where: { id },
     });
 
-    return createApiResponse(
-      200,
-      'Order-Address updated successfully',
+    return createApiResponse(200, 'Order-Address updated successfully', {
       updatedOrderAddress,
-    );
+    });
   }
 
   async remove(id: number) {
