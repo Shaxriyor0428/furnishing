@@ -9,6 +9,7 @@ import {
 import { OrderDetail } from '../../order_detail/entities/order_detail.entity';
 import { Likes } from '../../like/entities/like.entity';
 import { Review } from '../../review/entities/review.entity';
+import { productDetail } from '../../productDetail/entities/productDetail.entity';
 
 @Entity('product')
 export class Product {
@@ -36,7 +37,7 @@ export class Product {
   @Column({ type: 'simple-array', nullable: true })
   colors: string[];
 
-  @Column({ type: 'varchar', nullable:true})
+  @Column({ type: 'varchar', nullable: true })
   sku: string;
 
   @Column({ type: 'simple-array', nullable: true })

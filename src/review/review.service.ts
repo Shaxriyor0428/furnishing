@@ -82,7 +82,13 @@ export class ReviewService {
     });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} review`;
+  async remove(id: number) {
+    const review = await this.reviewRepo.findOne({ where: { id } });
+    if (!review) {
+      throw new NotFoundException(`Review with id ${id} not found`);
+    }
+
+    await this.reviewRepo.delete(id);
+    return createApiResponse(200, `Review with id ${id} removed successfully`);
   }
 }
