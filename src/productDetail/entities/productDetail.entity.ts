@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm';
+import { Product } from '../../product/entities/product.entity';
 
 @Entity('productDetail')
 export class productDetail {
@@ -29,7 +30,7 @@ export class productDetail {
   @Column({ type: 'varchar', length: 255, nullable: false })
   countryOrigin: string;
 
-  @Column("bigint", { array: true, nullable: false })
+  @Column('bigint', { array: true, nullable: false })
   tags: number[];
 
   @Column({ type: 'integer', nullable: false })
@@ -49,4 +50,9 @@ export class productDetail {
 
   @Column({ type: 'varchar', length: 255, nullable: false })
   upholsteryMaterial: string;
+
+  @OneToOne(() => Product, (product) => product.productDetail)
+  product: Product;
+
+  
 }

@@ -27,7 +27,7 @@ export class Payment {
   @Column({ type: 'int' })
   amount: number;
 
-  @Column({ type: 'enum', enum: PaymentStatus, default: PaymentStatus.Pending })
+  @Column({ type: 'enum', enum: PaymentStatus, default: PaymentStatus.PENDING})
   status: PaymentStatus;
 
   @OneToOne(() => Order, (order) => order.orderDetails)

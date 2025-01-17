@@ -1,5 +1,13 @@
-import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { CartDetail } from '../../cart_detail/entities/cart_detail.entity';
+import { Product } from '../../product/entities/product.entity';
+import { Customer } from '../../customer/entities/customer.entity';
 
 @Entity('cart')
 export class Cart {
@@ -18,9 +26,9 @@ export class Cart {
   @Column({ type: 'date' })
   time: Date;
 
-  @OneToMany(() => CartDetail, (cart_detail) => cart_detail.cart)
-  cart_details: CartDetail[];
+  @OneToOne(() => Customer, (customer) => customer.cart)
+  customer: Customer;
 
-  // @OneToOne(() => Customer, (customer) => customer.cart)
-  // customer: Customer;
+  @OneToMany(() => CartDetail, (cart_details) => cart_details.cart)
+  cart_details: CartDetail[];
 }
