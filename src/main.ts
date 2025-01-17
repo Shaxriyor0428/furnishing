@@ -3,13 +3,19 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
+import { WinstonModule } from 'nest-winston';
+import { winstonConfig } from './common/logger/logger';
+import { AllExceptionsFilter } from './common/logger/ali-expression.logger';
 
 async function start() {
   const PORT = process.env.PORT || 3333;
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: WinstonModule.createLogger(winstonConfig),
+  });
 
   app.setGlobalPrefix('/api');
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  app.useGlobalFilters(new AllExceptionsFilter());
   app.use(cookieParser());
 
   app.enableCors({
@@ -18,7 +24,7 @@ async function start() {
         'http://localhost:5173',
         'http://localhost:3001',
         'http://localhost:3000',
-        // 'http://another-domain.com',
+        'http://167.71.195.218:3000',
       ];
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);

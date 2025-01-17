@@ -5,49 +5,44 @@ import { Product } from './entities/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { PaginationDto } from 'src/admin/dto/pagination.dto';
-
+import { createApiResponse } from '../common/utils';
 
 @Injectable()
 export class ProductService {
   constructor(
-    @InjectRepository(Product) private ProductRepo: Repository<Product>
+    @InjectRepository(Product) private ProductRepo: Repository<Product>,
   ) {}
 
   async create(createProductDto: CreateProductDto) {
-    const newProduct = this.ProductRepo.create(createProductDto);
-    return await this.ProductRepo.save(newProduct);
+    const product = await this.ProductRepo.save(createProductDto);
+    return createApiResponse(201, 'Product created successfully', { product });
   }
 
   async findAll(query: PaginationDto) {
     const { filter, order = 'asc', page = 1, limit = 10 } = query;
-  
+
     const skip = (page - 1) * limit;
-  
+
     const where = filter
-      ? [
-          { name: Like(`%${filter}%`) }, 
-          { description: Like(`%${filter}%`) }, 
-        ]
+      ? [{ name: Like(`%${filter}%`) }, { description: Like(`%${filter}%`) }]
       : {};
-  
+
     const [products, total] = await this.ProductRepo.findAndCount({
       where,
       order: {
-        name: order.toUpperCase() === 'ASC' ? 'ASC' : 'DESC', 
+        name: order.toUpperCase() === 'ASC' ? 'ASC' : 'DESC',
       },
       skip,
       take: limit,
     });
-  
+
     return {
       products,
       skip,
       limit,
-      total
+      total,
     };
   }
-  
-  
 
   async findOne(id: number) {
     const product = await this.ProductRepo.findOneBy({ id });
@@ -71,7 +66,7 @@ export class ProductService {
   }
 
   async remove(id: number) {
-    const product = await this.findOne(id);  
+    const product = await this.findOne(id);
     return await this.ProductRepo.remove(product);
   }
 }

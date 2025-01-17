@@ -9,7 +9,6 @@ import { CartModule } from './cart/cart.module';
 import { CartDetailModule } from './cart_detail/cart_detail.module';
 import { OrderAddressesModule } from './order_addresses/order_addresses.module';
 import { ProductModule } from './product/product.module';
-import { FileModule } from './file/file.module';
 import { CustomerModule } from './customer/customer.module';
 import { ProductDetailModule } from './productDetail/productDetail.module';
 import { OrderModule } from './order/order.module';
@@ -22,6 +21,9 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { DiscountModule } from './discount/discount.module';
 import { RatingModule } from './rating/rating.module';
 import { CategoryModule } from './category/category.module';
+import { LikeModule } from './like/like.module';
+import { ReviewModule } from './review/review.module';
+import { ImagesModule } from './images/images.module';
 
 @Module({
   imports: [
@@ -40,7 +42,7 @@ import { CategoryModule } from './category/category.module';
       autoLoadEntities: true,
     }),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', '..', 'uploads'),
+      rootPath: join(__dirname, '..', 'uploads'),
     }),
 
     AdminModule,
@@ -54,7 +56,6 @@ import { CategoryModule } from './category/category.module';
     CartDetailModule,
     OrderAddressesModule,
     ProductModule,
-    FileModule,
     CustomerModule,
     ProductDetailModule,
     MailModule,
@@ -62,6 +63,9 @@ import { CategoryModule } from './category/category.module';
     DiscountModule,
     RatingModule,
     CategoryModule,
+    LikeModule,
+    ReviewModule,
+    ImagesModule,
   ],
   controllers: [],
   providers: [],

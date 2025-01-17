@@ -8,12 +8,14 @@ import {
   Delete,
   HttpStatus,
   HttpCode,
+  Query,
 } from '@nestjs/common';
 import { CartDetailService } from './cart_detail.service';
 import { CreateCartDetailDto } from './dto/create-cart_detail.dto';
 import { UpdateCartDetailDto } from './dto/update-cart_detail.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CartDetail } from './entities/cart_detail.entity';
+import { PaginationDto } from '../admin/dto/pagination.dto';
 
 @ApiTags('Cart-Detail')
 @Controller('cart-detail')
@@ -38,8 +40,8 @@ export class CartDetailController {
     description: 'List of cart-details',
     type: [CartDetail],
   })
-  findAll() {
-    return this.cartDetailService.findAll();
+  findAll(@Query() paginationDto: PaginationDto) {
+    return this.cartDetailService.findAll(paginationDto);
   }
 
   @Get(':id')
