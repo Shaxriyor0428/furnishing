@@ -18,6 +18,9 @@ import { MailModule } from './mail/mail.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { OtpModule } from './otp/otp.module';
 import { CacheModule } from '@nestjs/cache-manager';
+import { DiscountModule } from './discount/discount.module';
+import { RatingModule } from './rating/rating.module';
+import { CategoryModule } from './category/category.module';
 import { LikeModule } from './like/like.module';
 import { ReviewModule } from './review/review.module';
 import { ImagesModule } from './images/images.module';
@@ -57,6 +60,9 @@ import { ImagesModule } from './images/images.module';
     ProductDetailModule,
     MailModule,
     OtpModule,
+    DiscountModule,
+    RatingModule,
+    CategoryModule,
     LikeModule,
     ReviewModule,
     ImagesModule,
