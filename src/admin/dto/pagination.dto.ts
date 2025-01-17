@@ -1,5 +1,10 @@
 import { Type } from 'class-transformer';
-import { IsOptional, IsString, IsNumberString, IsIn, IsNumber } from 'class-validator';
+import {
+  IsOptional,
+  IsString,
+  IsIn,
+  IsNumber,
+} from 'class-validator';
 
 export class PaginationDto {
   @IsOptional()

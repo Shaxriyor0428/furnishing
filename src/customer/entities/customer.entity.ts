@@ -1,6 +1,8 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Order } from '../../order/entities/order.entity';
 import { OrderAddress } from '../../order_addresses/entities/order_address.entity';
+import { Likes } from '../../like/entities/like.entity';
+import { Review } from '../../review/entities/review.entity';
 
 @Entity('customer')
 export class Customer {
@@ -33,4 +35,10 @@ export class Customer {
 
   @OneToMany(() => OrderAddress, (orderAddress) => orderAddress.customer_id)
   order_addresses: OrderAddress[];
+
+  @OneToMany(() => Likes, (like) => like.customer)
+  likes: Likes[];
+
+  @OneToMany(() => Review, (review) => review.customer)
+  reviews: Review[];
 }

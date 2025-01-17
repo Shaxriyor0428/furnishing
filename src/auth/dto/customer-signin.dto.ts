@@ -15,6 +15,11 @@ export class CustomerSignInDto {
   @IsEmail()
   readonly email: string;
 
+
+  @ApiProperty({
+    description:"Customer password",
+    example:"Qodir12"
+  })
   @IsString()
   @IsNotEmpty()
   @IsStrongPassword(
