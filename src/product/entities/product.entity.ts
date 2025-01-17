@@ -36,7 +36,7 @@ export class Product {
   @Column({ type: 'simple-array', nullable: true })
   colors: string[];
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', nullable:true})
   sku: string;
 
   @Column({ type: 'simple-array', nullable: true })
