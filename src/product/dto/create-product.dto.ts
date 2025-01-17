@@ -20,7 +20,7 @@ export class CreateProductDto {
   categoryId: number;
 
   @ApiProperty({
-    description: 'Name of the product',
+    description: 'Name of product',
     example: 'Wireless Headphones',
   })
   @IsString({ message: 'Name must be a string.' })
