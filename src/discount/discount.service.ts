@@ -26,7 +26,7 @@ export class DiscountService {
     const total = await this.discountRepo.count();
     const calculatedSkip = (page - 1) * limit;
     const discounts = await this.discountRepo.find({
-      relations: ['discount_details'],
+      relations: [],
       skip: calculatedSkip,
       take: limit,
     });
