@@ -7,7 +7,7 @@ import {
   Param,
   Delete,
   BadRequestException,
-  UploadedFile,
+  UploadedFiles,
   UseInterceptors,
   Res,
 } from '@nestjs/common';
@@ -15,7 +15,7 @@ import { FileService } from './file.service';
 import { CreateFileDto } from './dto/create-file.dto';
 import { UpdateFileDto } from './dto/update-file.dto';
 import { ApiTags, ApiConsumes, ApiBody } from '@nestjs/swagger';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { join } from 'path';
 import { Response } from 'express';
@@ -32,7 +32,7 @@ export class FileController {
 
   @Post()
   @UseInterceptors(
-    FileInterceptor('file', {
+    FilesInterceptor('files', 10, {
       storage: diskStorage({
         destination: './uploads',
         filename: (req, file, callback) => {
@@ -42,7 +42,15 @@ export class FileController {
         },
       }),
       fileFilter: (req, file, callback) => {
-        const allowedTypes = ['image/jpeg', 'application/pdf', 'video/mp4', 'image/png', 'image/jpg', 'image/svg', 'image/webp'];
+        const allowedTypes = [
+          'image/jpeg',
+          'application/pdf',
+          'video/mp4',
+          'image/png',
+          'image/jpg',
+          'image/svg+xml',
+          'image/webp',
+        ];
         if (!allowedTypes.includes(file.mimetype)) {
           return callback(new BadRequestException('Unsupported file type'), false);
         }
@@ -52,50 +60,38 @@ export class FileController {
   )
   @ApiConsumes('multipart/form-data')
   @ApiBody({
-    description: 'Upload a file or provide a URL',
-    type: CreateFileDto,
+    description: 'Upload one or more files',
+    schema: {
+      type: 'object',
+      properties: {
+        files: {
+          type: 'array',
+          items: {
+            type: 'string',
+            format: 'binary',
+          },
+        },
+      },
+    },
   })
-  async uploadFile(
-    @UploadedFile() file: Express.Multer.File,
-    @Body() createFileDto: CreateFileDto,
-  ) {
-    if (!file && !createFileDto.url) {
-      throw new BadRequestException('Either a file or URL is required');
+  async uploadFiles(@UploadedFiles() files: Express.Multer.File[]) {
+    if (!files || files.length === 0) {
+      throw new BadRequestException('At least one file must be uploaded');
     }
-
-    let fileData: {
-      filename: string;
-      originalname: string;
-      path: string;
-      mimetype: string;
-    };
-
-    if (createFileDto.url) {
-      const url = createFileDto.url;
-    
-      try {
-        const response = await axios.get(url, { responseType: 'arraybuffer' });
-    
-        const originalNameWithQuery = url.split('/').pop() || `file-${Date.now()}`;
-        const originalName = originalNameWithQuery.split('?')[0]; 
-        const filePath = join(__dirname, '..', '..', './uploads', originalName);
-    
-        await writeFile(filePath, response.data);
-    
-        fileData = {
-          filename: originalName,
-          originalname: originalName,
-          path: filePath,
-          mimetype: response.headers['content-type'],
-        };
-      } catch (error) {
-        throw new BadRequestException('Invalid URL or unable to fetch file from URL');
-      }
+  
+    const uploadedFiles = files.map((file) => ({
+      filename: file.filename,
+    }));
+  
+    const results = [];
+    for (const fileData of uploadedFiles) {
+      const result = await this.fileService.create([fileData]);
+      results.push(result);
     }
-    
-
-    return this.fileService.create(fileData);
+  
+    return results;
   }
+  
 
   @Get()
   findAll() {
