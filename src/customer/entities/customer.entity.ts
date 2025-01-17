@@ -1,8 +1,16 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Order } from '../../order/entities/order.entity';
 import { OrderAddress } from '../../order_addresses/entities/order_address.entity';
 import { Likes } from '../../like/entities/like.entity';
 import { Review } from '../../review/entities/review.entity';
+import { Rating } from '../../rating/entities/rating.entity';
+import { Cart } from '../../cart/entities/cart.entity';
 
 @Entity('customer')
 export class Customer {
@@ -41,4 +49,10 @@ export class Customer {
 
   @OneToMany(() => Review, (review) => review.customer)
   reviews: Review[];
+
+  @OneToMany(() => Rating, (rating) => rating.customer)
+  ratings: Rating[];
+
+  @OneToOne(() => Cart, (cart) => cart.customer)
+  cart: Cart;
 }

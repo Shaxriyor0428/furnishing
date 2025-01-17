@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Product } from '../../product/entities/product.entity';
 
 @Entity('image')
 export class Image {
@@ -10,4 +11,7 @@ export class Image {
 
   @Column({ type: 'simple-array', nullable: true })
   images: string[];
+
+  @OneToOne(() => Product, (product) => product.image)
+  product: Product;
 }

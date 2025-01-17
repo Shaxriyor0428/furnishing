@@ -55,7 +55,7 @@ export class ImagesController {
           callback(null, true);
         } else {
           callback(
-            new BadRequestException('Only image files allowed download'),
+            new BadRequestException('Only image files are allowed to download!'),
             false,
           );
         }
