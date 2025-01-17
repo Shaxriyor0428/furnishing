@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNumber, IsOptional, IsArray, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
-import { IsArray, IsOptional, IsString, IsNumber } from 'class-validator';
 
 export class CreateImageDto {
   @ApiProperty({
@@ -12,12 +12,15 @@ export class CreateImageDto {
   productId: number;
 
   @ApiProperty({
-    description: 'Array of image file paths or URLs',
-    example: ['image1.png', 'image2.jpg', 'image3.webp'],
-    nullable: true,
+    type: 'array',
+    description: 'Array of image files (images)',
+    items: {
+      type: 'string',
+      format: 'binary',
+    },
+    required: true,
   })
+  @IsArray()
   @IsOptional()
-  @IsArray({ message: 'Images must be an array.' })
-  @IsString({ each: true, message: 'Each image must be a string.' })
-  images: string[];
+  images: any[];
 }
