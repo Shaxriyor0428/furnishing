@@ -23,7 +23,7 @@ export class RatingService {
     const total = await this.ratingRepo.count();
     const calculatedSkip = (page - 1) * limit;
     const ratings = await this.ratingRepo.find({
-      relations: ['rating_details'],
+      relations: [],
       skip: calculatedSkip,
       take: limit,
     });

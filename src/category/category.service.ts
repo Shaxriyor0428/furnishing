@@ -26,7 +26,7 @@ export class CategoryService {
     const total = await this.categoryRepo.count();
     const calculatedSkip = (page - 1) * limit;
     const categorys = await this.categoryRepo.find({
-      relations: ['category_details'],
+      relations: [],
       skip: calculatedSkip,
       take: limit,
     });
