@@ -17,7 +17,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Payment } from './entities/payment.entity';
 import { PaginationDto } from '../admin/dto/pagination.dto';
 
-@ApiTags('payment')
+@ApiTags('Payment')
 @Controller('payment')
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}

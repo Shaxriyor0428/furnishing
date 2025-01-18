@@ -18,7 +18,7 @@ import { Customer } from './entities/customer.entity';
 import { AdminAccessTokenGuard } from '../common/guards/admin.access-token.guard';
 import { CustomerSelfGuard } from '../common/guards/customer.self.guard';
 
-@ApiTags('customer')
+@ApiTags('Customer')
 @Controller('customer')
 export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
