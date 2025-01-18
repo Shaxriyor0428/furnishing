@@ -7,6 +7,7 @@ import { Likes } from './entities/like.entity';
 import { Customer } from '../customer/entities/customer.entity';
 import { createApiResponse } from '../common/utils';
 import { PaginationDto } from '../admin/dto/pagination.dto';
+import { Product } from '../product/entities/product.entity';
 
 @Injectable()
 export class LikeService {
@@ -14,21 +15,41 @@ export class LikeService {
     @InjectRepository(Likes) private readonly likeRepo: Repository<Likes>,
     @InjectRepository(Customer)
     private readonly customerRepo: Repository<Customer>,
+    @InjectRepository(Product)
+    private readonly productRepo: Repository<Product>,
   ) {}
 
-  async create(createLikeDto: CreateLikeDto) {
-    const customer = await this.customerRepo.findOne({
-      where: { id: createLikeDto.customerId },
-    });
-    if (!customer) {
-      throw new NotFoundException(
-        `Customer with id ${createLikeDto.customerId} not found`,
-      );
-    }
+  async toggleLike(createLikeDto: CreateLikeDto) {
+    const { customerId, productId } = createLikeDto;
 
-    const newLike = this.likeRepo.create(createLikeDto);
-    await this.likeRepo.save(newLike);
-    return createApiResponse(201, 'Like created successfully', { newLike });
+    const existingLike = await this.likeRepo.findOne({
+      where: { customerId, productId },
+    });
+
+    if (existingLike) {
+      await this.likeRepo.remove(existingLike);
+      return createApiResponse(200, 'Like removed successfully', {
+        existingLike,
+      });
+    } else {
+      const customer = await this.customerRepo.findOne({
+        where: { id: customerId },
+      });
+      if (!customer) {
+        throw new NotFoundException(`Customer with id ${customerId} not found`);
+      }
+
+      const product = await this.productRepo.findOne({
+        where: { id: productId },
+      });
+      if (!product) {
+        throw new NotFoundException(`Product with id ${productId} not found`);
+      }
+
+      const newLike = this.likeRepo.create(createLikeDto);
+      await this.likeRepo.save(newLike);
+      return createApiResponse(201, 'Like created successfully', { newLike });
+    }
   }
 
   async findAll(paginationDto: PaginationDto) {
