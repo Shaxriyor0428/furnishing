@@ -8,18 +8,22 @@ import {
   Query,
   HttpStatus,
   HttpCode,
+  UseGuards,
 } from '@nestjs/common';
 import { CustomerService } from './customer.service';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PaginationDto } from '../admin/dto/pagination.dto';
 import { Customer } from './entities/customer.entity';
+import { AdminAccessTokenGuard } from '../common/guards/admin.access-token.guard';
+import { CustomerSelfGuard } from '../common/guards/customer.self.guard';
 
 @ApiTags('customer')
 @Controller('customer')
 export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
 
+  @UseGuards(AdminAccessTokenGuard)
   @Get()
   @ApiOperation({ summary: 'Get all customers' })
   @ApiResponse({
@@ -31,6 +35,7 @@ export class CustomerController {
     return this.customerService.findAll(paginationDto);
   }
 
+  @UseGuards(CustomerSelfGuard)
   @Get(':id')
   @ApiOperation({ summary: 'Get customer by ID' })
   @ApiResponse({
@@ -42,6 +47,7 @@ export class CustomerController {
     return this.customerService.findOne(+id);
   }
 
+  @UseGuards(CustomerSelfGuard)
   @Patch(':id')
   @ApiOperation({ summary: 'Update customer by ID' })
   @HttpCode(HttpStatus.OK)
@@ -57,6 +63,7 @@ export class CustomerController {
     return this.customerService.update(+id, updateCustomerDto);
   }
 
+  @UseGuards(CustomerSelfGuard)
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Delete customer by ID' })
