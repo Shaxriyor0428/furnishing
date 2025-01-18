@@ -43,7 +43,7 @@ export class CustomerService {
       skip: calculatedSkip,
       take: limit,
     });
-    return createApiResponse(200, 'List of admins retrieved successfully', {
+    return createApiResponse(200, 'List of customers retrieved successfully', {
       customers,
       total,
       limit,
@@ -54,21 +54,21 @@ export class CustomerService {
   async findOne(id: number) {
     const customer = await this.customerRepo.findOne({ where: { id } });
     if (!customer) {
-      throw new NotFoundException(`Admin with id ${id} not found`);
+      throw new NotFoundException(`Customer with id ${id} not found`);
     }
-    return createApiResponse(200, 'Admin retrieved successfully', { customer });
+    return createApiResponse(200, 'Customer retrieved successfully', { customer });
   }
 
   async update(id: number, updateCustomerDto: UpdateCustomerDto) {
     const existingcustomer = await this.customerRepo.findOne({ where: { id } });
     if (!existingcustomer) {
-      throw new NotFoundException(`Admin with id ${id} not found`);
+      throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
     await this.customerRepo.update(id, updateCustomerDto);
     const updateCustomer = await this.customerRepo.findOne({ where: { id } });
 
-    return createApiResponse(200, 'Admin updated successfully', {
+    return createApiResponse(200, 'Customer updated successfully', {
       updateCustomer,
     });
   }
@@ -76,10 +76,10 @@ export class CustomerService {
   async remove(id: number) {
     const customer = await this.customerRepo.findOne({ where: { id } });
     if (!customer) {
-      throw new NotFoundException(`Admin with id ${id} not found`);
+      throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
     await this.customerRepo.delete(id);
-    return createApiResponse(200, 'Admin removed successfully');
+    return createApiResponse(200, 'Customer removed successfully');
   }
 }

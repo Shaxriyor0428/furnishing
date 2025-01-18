@@ -1,28 +1,25 @@
 import * as winston from 'winston';
+import 'winston-daily-rotate-file';
 
-export const winstonConfig = {
-  transports: [
-    // new winston.transports.Console({
-    //   format: winston.format.combine(
-    //     winston.format.timestamp(),
-    //     nestWinstonModuleUtilities.format.nestLike(),
-    //   ),
-    // }),
-    // new winston.transports.File({
-    //   filename: 'logs/application.log',
-    //   level: 'info',
-    //   format: winston.format.combine(
-    //     winston.format.timestamp(),
-    //     winston.format.json(),
-    //   ),
-    // }),
-    new winston.transports.File({
-      filename: 'logs/error.log',
-      level: 'error',
-      format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.json(),
-      ),
+const logDir = 'logs';
+
+const dailyRotateFileTransport = new winston.transports.DailyRotateFile({
+  filename: `${logDir}/application-%DATE%.log`,
+  datePattern: 'YYYY-MM-DD',
+  zippedArchive: true,
+  maxSize: '20m',
+  maxFiles: '14d',
+  handleExceptions: true,
+  handleRejections: true,
+});
+
+export const winstonConfig = winston.createLogger({
+  level: 'error',
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.printf(({ timestamp, level, message }) => {
+      return `${timestamp} [${level}]: ${message}`;
     }),
-  ],
-};
+  ),
+  transports: [dailyRotateFileTransport],
+});
