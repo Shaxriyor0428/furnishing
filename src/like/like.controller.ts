@@ -11,7 +11,7 @@ import {
 import { LikeService } from './like.service';
 import { CreateLikeDto } from './dto/create-like.dto';
 import { UpdateLikeDto } from './dto/update-like.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PaginationDto } from '../admin/dto/pagination.dto';
 
 @ApiTags('Like')
@@ -22,6 +22,11 @@ export class LikeController {
   @Post()
   create(@Body() createLikeDto: CreateLikeDto) {
     return this.likeService.create(createLikeDto);
+  }
+
+  @Get('/product/:product_id')
+  findProductLike(@Param('product_id') product_id: string) {
+    return this.likeService.getProductLikes(+product_id);
   }
 
   @Get()
