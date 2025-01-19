@@ -64,7 +64,6 @@ export class AdminAuthService {
     });
     const newAdmin = {
       id: admin.id,
-      access_token,
       email: admin.email,
       phone: admin.phone_number,
       is_creator: admin.is_creator,
@@ -72,7 +71,10 @@ export class AdminAuthService {
     };
 
     await this.updateRefreshToken(admin.id, refresh_token);
-    return createApiResponse(201, 'Admin added successfully', { newAdmin });
+    return createApiResponse(201, 'Admin added successfully', {
+      newAdmin,
+      access_token,
+    });
   }
 
   async adminSignIn(res: Response, adminSignInDto: AdminSignInDto) {
@@ -108,7 +110,7 @@ export class AdminAuthService {
     if (!admin || !admin.hashed_refresh_token) {
       throw new BadRequestException('Admin not found');
     }
-    
+
     const rMatchesh = await compare(refreshToken, admin.hashed_refresh_token);
     if (!rMatchesh) {
       throw new ForbiddenException('Access denied');
