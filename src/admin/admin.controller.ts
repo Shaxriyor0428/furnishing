@@ -31,7 +31,7 @@ export class AdminController {
   //   return this.adminService.create(createAdminDto);
   // }
 
-  // @UseGuards(AdminSelfGuard)
+  @UseGuards(AdminAccessTokenGuard)
   @Get()
   @ApiOperation({ summary: 'Get all admins' })
   @ApiResponse({
@@ -39,11 +39,11 @@ export class AdminController {
     description: 'List of admins',
     type: [Admin],
   })
-  findAll(@Query() paginationDto:PaginationDto) {
+  findAll(@Query() paginationDto: PaginationDto) {
     return this.adminService.findAll(paginationDto);
   }
 
-  // @UseGuards(AdminSelfGuard)
+  @UseGuards(AdminSelfGuard)
   @Get(':id')
   @ApiOperation({ summary: 'Get admin by ID' })
   @ApiResponse({

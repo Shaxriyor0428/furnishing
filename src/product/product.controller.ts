@@ -7,12 +7,14 @@ import {
   Put,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { PaginationDto } from 'src/admin/dto/pagination.dto';
+import { AdminAccessTokenGuard } from '../common/guards/admin.access-token.guard';
 
 @ApiTags('Products')
 @Controller('product')
@@ -22,6 +24,7 @@ export class ProductController {
   @ApiOperation({ summary: 'Create a new product' })
   @ApiResponse({ status: 201, description: 'Product created successfully.' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
+  @UseGuards(AdminAccessTokenGuard)
   @Post()
   async createProduct(@Body() createProductDto: CreateProductDto) {
     return this.productService.create(createProductDto);
@@ -83,6 +86,7 @@ export class ProductController {
     return this.productService.findOne(id);
   }
 
+  @UseGuards(AdminAccessTokenGuard)
   @Put(':id')
   @ApiOperation({ summary: 'Update a product by ID' })
   @ApiResponse({ status: 200, description: 'Product updated successfully.' })
@@ -94,6 +98,7 @@ export class ProductController {
     return this.productService.update(id, updateProductDto);
   }
 
+  @UseGuards(AdminAccessTokenGuard)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a product by ID' })
   @ApiResponse({ status: 200, description: 'Product deleted successfully.' })
