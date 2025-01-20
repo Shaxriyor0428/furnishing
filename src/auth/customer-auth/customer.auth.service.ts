@@ -81,6 +81,7 @@ export class CustomerAuthService {
     });
 
     return createApiResponse(201, 'Customer signed up successfully', {
+      access_token,
       newCustomer,
     });
   }
