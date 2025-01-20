@@ -30,9 +30,6 @@ export class Payment {
   @Column({ type: 'enum', enum: PaymentStatus, default: PaymentStatus.PENDING })
   status: PaymentStatus;
 
-  @Column({ type: 'varchar', nullable: true })
-  paymeTransactionId: string; // Payme tranzaksiya ID
-
   @OneToOne(() => Order, (order) => order.orderDetails)
   @JoinColumn({ name: 'orderId' })
   order: Order;
