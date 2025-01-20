@@ -6,14 +6,22 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { PaginationDto } from 'src/admin/dto/pagination.dto';
 import { createApiResponse } from '../common/utils';
+import { Category } from '../category/entities/category.entity';
 
 @Injectable()
 export class ProductService {
   constructor(
     @InjectRepository(Product) private ProductRepo: Repository<Product>,
+    @InjectRepository(Category) private categoryRepo: Repository<Category>,
   ) {}
 
   async create(createProductDto: CreateProductDto) {
+    const category = await this.categoryRepo.findOneBy({
+      id: createProductDto.categoryId,
+    });
+    if (!category) {
+      throw new NotFoundException('Category not found');
+    }
     const product = await this.ProductRepo.save(createProductDto);
     return createApiResponse(201, 'Product created successfully', { product });
   }

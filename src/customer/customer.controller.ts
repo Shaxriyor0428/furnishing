@@ -63,7 +63,7 @@ export class CustomerController {
     return this.customerService.update(+id, updateCustomerDto);
   }
 
-  @UseGuards(CustomerSelfGuard)
+  @UseGuards(AdminAccessTokenGuard)
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Delete customer by ID' })

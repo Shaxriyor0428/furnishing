@@ -9,6 +9,7 @@ import {
   HttpCode,
   HttpStatus,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { DiscountService } from './discount.service';
 import { CreateDiscountDto } from './dto/create-discount.dto';
@@ -16,12 +17,14 @@ import { UpdateDiscountDto } from './dto/update-discount.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Discount } from './entities/discount.entity';
 import { PaginationDto } from '../admin/dto/pagination.dto';
+import { AdminAccessTokenGuard } from '../common/guards/admin.access-token.guard';
 
 @ApiTags('Discount')
 @Controller('discount')
 export class DiscountController {
   constructor(private readonly discountService: DiscountService) {}
 
+  @UseGuards(AdminAccessTokenGuard)
   @Post()
   @ApiOperation({ summary: 'Create discount' })
   @ApiResponse({
@@ -55,6 +58,7 @@ export class DiscountController {
     return this.discountService.findOne(+id);
   }
 
+  @UseGuards(AdminAccessTokenGuard)
   @Patch(':id')
   @ApiOperation({ summary: 'Update discount by ID' })
   @HttpCode(HttpStatus.OK)
@@ -70,6 +74,7 @@ export class DiscountController {
     return this.discountService.update(+id, updateDiscountDto);
   }
 
+  @UseGuards(AdminAccessTokenGuard)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete discount by ID' })
   @HttpCode(HttpStatus.OK)

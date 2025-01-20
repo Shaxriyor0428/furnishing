@@ -11,6 +11,7 @@ import {
   BadRequestException,
   Query,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { ImagesService } from './images.service';
 import { CreateImageDto } from './dto/create-image.dto';
@@ -27,6 +28,7 @@ import {
 import { join } from 'path';
 import { Response } from 'express';
 import { Image } from './entities/image.entity';
+import { AdminAccessTokenGuard } from '../common/guards/admin.access-token.guard';
 
 @ApiTags('Images')
 @Controller('images')
@@ -44,6 +46,7 @@ export class ImagesController {
     description: 'Image created successfully',
     type: Image,
   })
+  // @UseGuards(AdminAccessTokenGuard)
   @Post()
   @UseInterceptors(
     FilesInterceptor('images', 10, {
@@ -55,7 +58,9 @@ export class ImagesController {
           callback(null, true);
         } else {
           callback(
-            new BadRequestException('Only image files are allowed to download!'),
+            new BadRequestException(
+              'Only image files are allowed to download!',
+            ),
             false,
           );
         }
@@ -103,6 +108,7 @@ export class ImagesController {
     status: 200,
     description: 'Image updated successfully',
   })
+  // @UseGuards(AdminAccessTokenGuard)
   @Patch(':id')
   @UseInterceptors(
     FilesInterceptor('images', 10, {
@@ -137,6 +143,7 @@ export class ImagesController {
     status: 200,
     description: 'Image removed successfully',
   })
+  // @UseGuards(AdminAccessTokenGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.imagesService.remove(+id);

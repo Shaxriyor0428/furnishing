@@ -9,6 +9,7 @@ import {
   HttpCode,
   HttpStatus,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -16,12 +17,14 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Category } from './entities/category.entity';
 import { PaginationDto } from '../admin/dto/pagination.dto';
+import { AdminAccessTokenGuard } from '../common/guards/admin.access-token.guard';
 
 @ApiTags('Category')
 @Controller('category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
+  @UseGuards(AdminAccessTokenGuard)
   @Post()
   @ApiOperation({ summary: 'Post a category' })
   @ApiResponse({
@@ -55,6 +58,7 @@ export class CategoryController {
     return this.categoryService.findOne(+id);
   }
 
+  @UseGuards(AdminAccessTokenGuard)
   @Patch(':id')
   @ApiOperation({ summary: 'Update category by ID' })
   @HttpCode(HttpStatus.OK)
@@ -70,6 +74,7 @@ export class CategoryController {
     return this.categoryService.update(+id, updateCategoryDto);
   }
 
+  @UseGuards(AdminAccessTokenGuard)
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Delete category by ID' })
