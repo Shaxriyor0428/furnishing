@@ -24,7 +24,7 @@ import { AdminAccessTokenGuard } from '../common/guards/admin.access-token.guard
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
-  @UseGuards(AdminAccessTokenGuard)
+  // @UseGuards(AdminAccessTokenGuard)
   @Post()
   @ApiOperation({ summary: 'Post a category' })
   @ApiResponse({

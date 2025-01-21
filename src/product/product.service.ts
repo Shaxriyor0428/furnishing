@@ -7,6 +7,7 @@ import { Like, Repository } from 'typeorm';
 import { PaginationDto } from 'src/admin/dto/pagination.dto';
 import { createApiResponse } from '../common/utils';
 import { Category } from '../category/entities/category.entity';
+import { saveFile } from '../common/helpers/saveImage';
 
 @Injectable()
 export class ProductService {
@@ -15,14 +16,22 @@ export class ProductService {
     @InjectRepository(Category) private categoryRepo: Repository<Category>,
   ) {}
 
-  async create(createProductDto: CreateProductDto) {
+  async create(createProductDto: CreateProductDto, images: any[]) {
     const category = await this.categoryRepo.findOneBy({
       id: createProductDto.categoryId,
     });
     if (!category) {
       throw new NotFoundException('Category not found');
     }
-    const product = await this.ProductRepo.save(createProductDto);
+
+    const fileNames = await Promise.all(
+      images.map((image: any) => saveFile(image)),
+    );
+    const product = await this.ProductRepo.save({
+      ...createProductDto,
+      images: fileNames,
+    });
+
     return createApiResponse(201, 'Product created successfully', { product });
   }
 
@@ -60,7 +69,7 @@ export class ProductService {
     return product;
   }
 
-  async update(id: number, updateProductDto: UpdateProductDto) {
+  async update(id: number, updateProductDto: UpdateProductDto, images: any[]) {
     const product = await this.ProductRepo.preload({
       id: id,
       ...updateProductDto,
@@ -70,7 +79,15 @@ export class ProductService {
       throw new NotFoundException(`Product with ID ${id} not found.`);
     }
 
-    return await this.ProductRepo.save(product);
+    if (images && images.length > 0) {
+      const fileNames = await Promise.all(
+        images.map((image: any) => saveFile(image)),
+      );
+      product.images = fileNames;
+    }
+
+    await this.ProductRepo.save(product);
+    return createApiResponse(200, 'Product updated successfully', { product });
   }
 
   async remove(id: number) {

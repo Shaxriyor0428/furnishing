@@ -11,7 +11,7 @@ import {
   Max,
 } from 'class-validator';
 
-export class CreateProductDto {
+export class FormDataDto {
   @ApiProperty({
     description: 'ID of the category the product belongs to',
     example: 1,
@@ -76,9 +76,8 @@ export class CreateProductDto {
     example: ['red', 'blue', 'green'],
     nullable: true,
   })
-  @IsArray({ message: 'Colors must be an array.' })
-  @IsString({ each: true, message: 'Each color must be a string.' })
-  colors: string[];
+  @IsString()
+  colors: string;
 
   @ApiProperty({
     description: 'Stock Keeping Unit identifier',
@@ -92,7 +91,6 @@ export class CreateProductDto {
     example: ['electronics', 'wireless', 'headphones'],
     nullable: true,
   })
-  @IsArray({ message: 'Tags must be an array.' })
-  @IsString({ each: true, message: 'Each tag must be a string.' })
-  tags: string[];
+  @IsString()
+  tags: string;
 }

@@ -8,6 +8,9 @@ import {
   Delete,
   Query,
   UseGuards,
+  UseInterceptors,
+  BadRequestException,
+  UploadedFiles,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
 import { ProductService } from './product.service';
@@ -15,19 +18,45 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { PaginationDto } from 'src/admin/dto/pagination.dto';
 import { AdminAccessTokenGuard } from '../common/guards/admin.access-token.guard';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { FormDataDto } from './dto/form-data.dto';
+import { UpdateFormDto } from './dto/update-form.dto';
 
 @ApiTags('Products')
-@Controller('product')
+@Controller('products')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
-  @ApiOperation({ summary: 'Create a new product' })
+  @ApiOperation({ summary: 'Create a new product with images' })
   @ApiResponse({ status: 201, description: 'Product created successfully.' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
-  @UseGuards(AdminAccessTokenGuard)
   @Post()
-  async createProduct(@Body() createProductDto: CreateProductDto) {
-    return this.productService.create(createProductDto);
+  @UseInterceptors(
+    FilesInterceptor('images', 10, {
+      fileFilter: (req, file, callback) => {
+        const allowedTypes = /jpeg|jpg|png|gif|avif/;
+        const extname = allowedTypes.test(file.originalname.toLowerCase());
+        const mimetype = allowedTypes.test(file.mimetype);
+        if (extname && mimetype) {
+          callback(null, true);
+        } else {
+          callback(
+            new BadRequestException('Only image files are allowed!'),
+            false,
+          );
+        }
+      },
+      limits: { fileSize: 3 * 1024 * 1024 },
+    }),
+  )
+  async createProduct(
+    @Body() formDataDto: FormDataDto,
+    @UploadedFiles() images: any[],
+  ) {
+    const tags = formDataDto.tags.split(',');
+    const colors = formDataDto.colors.split(',');
+
+    return this.productService.create({ ...formDataDto, tags, colors }, images);
   }
 
   @Get()
@@ -91,11 +120,38 @@ export class ProductController {
   @ApiOperation({ summary: 'Update a product by ID' })
   @ApiResponse({ status: 200, description: 'Product updated successfully.' })
   @ApiResponse({ status: 404, description: 'Product not found.' })
+  @UseInterceptors(
+    FilesInterceptor('images', 10, {
+      fileFilter: (req, file, callback) => {
+        const allowedTypes = /jpeg|jpg|png|gif|avif/;
+        const extname = allowedTypes.test(file.originalname.toLowerCase());
+        const mimetype = allowedTypes.test(file.mimetype);
+        if (extname && mimetype) {
+          callback(null, true);
+        } else {
+          callback(
+            new BadRequestException('Only image files are allowed!'),
+            false,
+          );
+        }
+      },
+      limits: {
+        fileSize: 3 * 1024 * 1024,
+      },
+    }),
+  )
   async update(
     @Param('id') id: number,
-    @Body() updateProductDto: UpdateProductDto,
+    @Body() updateFormDto: UpdateFormDto,
+    @UploadedFiles() images: any[],
   ) {
-    return this.productService.update(id, updateProductDto);
+    const tags = updateFormDto.tags.split(',');
+    const colors = updateFormDto.colors.split(',');
+    return this.productService.update(
+      id,
+      { ...updateFormDto, tags, colors },
+      images,
+    );
   }
 
   @UseGuards(AdminAccessTokenGuard)
