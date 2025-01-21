@@ -14,8 +14,6 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
 import { ProductService } from './product.service';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
 import { PaginationDto } from 'src/admin/dto/pagination.dto';
 import { AdminAccessTokenGuard } from '../common/guards/admin.access-token.guard';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -56,7 +54,10 @@ export class ProductController {
     const tags = formDataDto.tags.split(',');
     const colors = formDataDto.colors.split(',');
 
-    return this.productService.create({ ...formDataDto, tags, colors }, images);
+    return await this.productService.create(
+      { ...formDataDto, tags, colors },
+      images,
+    );
   }
 
   @Get()
