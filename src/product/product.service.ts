@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
@@ -23,6 +27,12 @@ export class ProductService {
     if (!category) {
       throw new NotFoundException('Category not found');
     }
+    const existsProduct = await this.ProductRepo.findOneBy({
+      sku: createProductDto.sku,
+    });
+    if (existsProduct) {
+      throw new BadRequestException('Product already exists');
+    }
 
     const fileNames = await Promise.all(
       images.map((image: any) => saveFile(image)),
@@ -36,7 +46,7 @@ export class ProductService {
   }
 
   async findAll(query: PaginationDto) {
-    const { filter, order = 'asc', page = 1, limit = 10 } = query;
+    const { filter, order, page, limit } = query;
     const skip = (page - 1) * limit;
 
     const where = filter
@@ -46,19 +56,18 @@ export class ProductService {
     const [products, total] = await this.ProductRepo.findAndCount({
       where,
       order: {
-        name: order.toUpperCase() === 'ASC' ? 'ASC' : 'DESC',
-        createdAt: 'DESC',
+        createdAt: order.toUpperCase() === 'ASC' ? 'ASC' : 'DESC',
       },
       skip,
       take: limit,
     });
 
-    return {
+    return createApiResponse(200, 'Product retrevied successfully', {
       products,
       skip,
       limit,
       total,
-    };
+    });
   }
 
   async findOne(id: number) {
