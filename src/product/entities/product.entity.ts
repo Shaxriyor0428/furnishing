@@ -18,7 +18,6 @@ import { Category } from '../../category/entities/category.entity';
 import { Discount } from '../../discount/entities/discount.entity';
 import { Cart } from '../../cart/entities/cart.entity';
 import { CartDetail } from '../../cart_detail/entities/cart_detail.entity';
-import { Image } from '../../images/entities/image.entity';
 
 @Entity('product')
 export class Product {
@@ -76,8 +75,8 @@ export class Product {
   @OneToOne(() => productDetail, (productDetail) => productDetail.product)
   productDetail: productDetail;
 
-  @OneToOne(() => Image, (image) => image.product)
-  image: Image;
+  @Column({ type: 'simple-array', nullable: true })
+  images: string[];
 
   @OneToOne(() => Discount, (discount) => discount.product)
   discount: Discount;

@@ -23,7 +23,6 @@ import { RatingModule } from './rating/rating.module';
 import { CategoryModule } from './category/category.module';
 import { LikeModule } from './like/like.module';
 import { ReviewModule } from './review/review.module';
-import { ImagesModule } from './images/images.module';
 
 @Module({
   imports: [
@@ -65,7 +64,6 @@ import { ImagesModule } from './images/images.module';
     CategoryModule,
     LikeModule,
     ReviewModule,
-    ImagesModule,
   ],
   controllers: [],
   providers: [],
