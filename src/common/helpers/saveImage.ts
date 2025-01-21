@@ -25,3 +25,19 @@ export async function saveFile(file: any): Promise<string> {
     throw new InternalServerErrorException('Rasmni filega yozishda xatolik');
   }
 }
+
+export function deleteFiles(fileNames: string[]) {
+  try {
+    fileNames.forEach((fileName) => {
+      const filePath = path.join(
+        __dirname, '..', '..', '..', 'uploads',
+        fileName,
+      );
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    });
+  } catch (error) {
+    console.error('Error deleting files:', error);
+  }
+}

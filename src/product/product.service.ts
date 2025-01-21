@@ -11,7 +11,7 @@ import { Like, Repository } from 'typeorm';
 import { PaginationDto } from 'src/admin/dto/pagination.dto';
 import { createApiResponse } from '../common/utils';
 import { Category } from '../category/entities/category.entity';
-import { saveFile } from '../common/helpers/saveImage';
+import { deleteFiles, saveFile } from '../common/helpers/saveImage';
 
 @Injectable()
 export class ProductService {
@@ -46,7 +46,7 @@ export class ProductService {
   }
 
   async findAll(query: PaginationDto) {
-    const { filter, order, page, limit, priceOrder } = query;
+    const { filter, order = 'desc', page, limit, priceOrder } = query;
     const skip = (page - 1) * limit;
 
     const where = filter
@@ -56,8 +56,8 @@ export class ProductService {
     const [products, total] = await this.ProductRepo.findAndCount({
       where,
       order: {
-        name: order?.toUpperCase() === 'ASC' ? 'ASC' : 'DESC',
-        price: priceOrder?.toUpperCase() === 'ASC' ? 'ASC' : 'DESC', 
+        createdAt: order.toUpperCase() === 'ASC' ? 'ASC' : 'DESC',
+        price: priceOrder?.toUpperCase() === 'ASC' ? 'ASC' : 'DESC',
       },
       skip,
       take: limit,
@@ -90,6 +90,10 @@ export class ProductService {
     }
 
     if (images && images.length > 0) {
+      if (product.images && product.images.length > 0) {
+        deleteFiles(product.images);
+      }
+
       const fileNames = await Promise.all(
         images.map((image: any) => saveFile(image)),
       );
@@ -101,7 +105,13 @@ export class ProductService {
   }
 
   async remove(id: number) {
+    console.log(id);
+    
     const product = await this.findOne(id);
-    return await this.ProductRepo.remove(product);
+    if (product.images && product.images.length > 0) {
+      deleteFiles(product.images);
+    }
+    await this.ProductRepo.remove(product);
+    return createApiResponse(200, 'Product delete successfully');
   }
 }
