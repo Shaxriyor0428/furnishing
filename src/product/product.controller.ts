@@ -4,13 +4,13 @@ import {
   Body,
   Get,
   Param,
-  Put,
   Delete,
   Query,
   UseGuards,
   UseInterceptors,
   BadRequestException,
   UploadedFiles,
+  Patch,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
 import { ProductService } from './product.service';
@@ -25,6 +25,7 @@ import { UpdateFormDto } from './dto/update-form.dto';
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
+  @UseGuards(AdminAccessTokenGuard)
   @ApiOperation({ summary: 'Create a new product with images' })
   @ApiResponse({ status: 201, description: 'Product created successfully.' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
@@ -108,7 +109,7 @@ export class ProductController {
   }
 
   @UseGuards(AdminAccessTokenGuard)
-  @Put(':id')
+  @Patch(':id')
   @ApiOperation({ summary: 'Update a product by ID' })
   @ApiResponse({ status: 200, description: 'Product updated successfully.' })
   @ApiResponse({ status: 404, description: 'Product not found.' })

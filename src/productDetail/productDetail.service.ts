@@ -36,7 +36,7 @@ export class ProductDetailService {
   }
 
   async findAll(query: PaginationDto) {
-    const { filter, order = 'asc', page = 1, limit = 10 } = query;
+    const { filter, order = 'asc', page, limit } = query;
 
     const skip = (page - 1) * limit;
 
