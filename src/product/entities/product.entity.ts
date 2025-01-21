@@ -45,7 +45,7 @@ export class Product {
   @Column({ type: 'simple-array', nullable: true })
   colors: string[];
 
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ type: 'varchar', nullable: true, unique: true })
   sku: string;
 
   @Column({ type: 'simple-array', nullable: true })

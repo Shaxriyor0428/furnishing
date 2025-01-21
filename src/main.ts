@@ -38,17 +38,16 @@ async function start() {
   });
 
   const config = new DocumentBuilder()
-    .setTitle('Furnishings')
     .addBearerAuth(
       {
         type: 'http',
         scheme: 'bearer',
         bearerFormat: 'JWT',
         description: 'Enter your Bearer token',
-        name: 'authorization',
       },
       'authorization',
     )
+    .setTitle('Furnishings')
     .setDescription(
       'Furnishings is an online platform designed to streamline furniture ordering and management. Users can browse a wide range of furnishings, customize their preferences, track orders, manage delivery schedules, and securely store transaction and user data.',
     )
