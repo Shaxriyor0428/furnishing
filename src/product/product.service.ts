@@ -98,16 +98,20 @@ export class ProductService {
         images.map((image: any) => saveFile(image)),
       );
       product.images = fileNames;
+      await this.ProductRepo.save(product);
     }
 
-    await this.ProductRepo.save(product);
-    return createApiResponse(200, 'Product updated successfully', { product });
+    const updatedProduct = await this.ProductRepo.save(updateProductDto);
+    return createApiResponse(200, 'Product updated successfully', {
+      updatedProduct,
+    });
   }
 
   async remove(id: number) {
-    console.log(id);
-    
     const product = await this.findOne(id);
+    if (!product) {
+      throw new BadRequestException(`Product not found with id ${id}`);
+    }
     if (product.images && product.images.length > 0) {
       deleteFiles(product.images);
     }
