@@ -55,7 +55,7 @@ export class ProductDetailService {
 
     return {
       products,
-      skip,
+      page,
       limit,
       total,
     };
