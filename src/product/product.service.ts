@@ -46,7 +46,7 @@ export class ProductService {
   }
 
   async findAll(query: PaginationDto) {
-    const { filter, order, page, limit } = query;
+    const { filter, order, page, limit, priceOrder } = query;
     const skip = (page - 1) * limit;
 
     const where = filter
@@ -56,13 +56,14 @@ export class ProductService {
     const [products, total] = await this.ProductRepo.findAndCount({
       where,
       order: {
-        createdAt: order.toUpperCase() === 'ASC' ? 'ASC' : 'DESC',
+        name: order?.toUpperCase() === 'ASC' ? 'ASC' : 'DESC',
+        price: priceOrder?.toUpperCase() === 'ASC' ? 'ASC' : 'DESC', 
       },
       skip,
       take: limit,
     });
 
-    return createApiResponse(200, 'Product retrevied successfully', {
+    return createApiResponse(200, 'Product retrieved successfully', {
       products,
       skip,
       limit,
