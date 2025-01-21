@@ -24,7 +24,7 @@ import { AdminAccessTokenGuard } from '../common/guards/admin.access-token.guard
 export class RatingController {
   constructor(private readonly ratingService: RatingService) {}
 
-  @UseGuards(AdminAccessTokenGuard)
+  // @UseGuards(AdminAccessTokenGuard)
   @Post()
   @ApiOperation({ summary: 'Post a rating' })
   @ApiResponse({

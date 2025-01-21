@@ -8,13 +8,13 @@ import {
 import { Product } from '../../product/entities/product.entity';
 import { Customer } from '../../customer/entities/customer.entity';
 
-@Entity('rating')
+@Entity('ratings')
 export class Rating {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({ type: 'int' })
-  reting: number;
+  rating: number;
 
   @Column({ type: 'int' })
   product_id: number;

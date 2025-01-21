@@ -28,7 +28,6 @@ export class ProductService {
 
   async findAll(query: PaginationDto) {
     const { filter, order = 'asc', page = 1, limit = 10 } = query;
-
     const skip = (page - 1) * limit;
 
     const where = filter
@@ -39,6 +38,7 @@ export class ProductService {
       where,
       order: {
         name: order.toUpperCase() === 'ASC' ? 'ASC' : 'DESC',
+        createdAt: 'DESC',
       },
       skip,
       take: limit,
