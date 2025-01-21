@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsPositive, IsNotEmpty } from 'class-validator';
+import { IsInt, IsPositive, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateReviewDto {
   @ApiProperty({
@@ -20,5 +20,12 @@ export class CreateReviewDto {
   @IsNotEmpty({ message: 'productId is required' })
   readonly productId: number;
 
+  @ApiProperty({
+    description: 'Readonly comment field',
+    type: String,
+    readOnly: true,
+    example: 'This is a readonly comment',
+  })
+  @IsString()
   readonly comment: string;
 }
