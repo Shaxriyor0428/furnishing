@@ -73,7 +73,13 @@ export class ProductController {
     name: 'order',
     required: false,
     enum: ['asc', 'desc'],
-    description: 'Order of sorting',
+    description: 'Order by product name',
+  })
+  @ApiQuery({
+    name: 'priceOrder',
+    required: false,
+    enum: ['asc', 'desc'],
+    description: 'Order by price',
   })
   @ApiQuery({
     name: 'page',
@@ -89,22 +95,7 @@ export class ProductController {
   })
   @ApiResponse({ status: 200, description: 'List of products' })
   async findAll(@Query() query: PaginationDto) {
-    console.log('Received query:', query);
-
-    const { filter, order, page, limit } = query;
-
-    const pageNum = page ? parseInt(page.toString(), 10) : 1;
-    const limitNum = limit ? parseInt(limit.toString(), 10) : 10;
-
-    // console.log('Converted pageNum:', pageNum);
-    // console.log('Converted limitNum:', limitNum);
-
-    return this.productService.findAll({
-      filter,
-      order,
-      page: pageNum,
-      limit: limitNum,
-    });
+    return this.productService.findAll(query);
   }
 
   @Get(':id')

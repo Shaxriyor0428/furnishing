@@ -1,10 +1,5 @@
 import { Type } from 'class-transformer';
-import {
-  IsOptional,
-  IsString,
-  IsIn,
-  IsNumber,
-} from 'class-validator';
+import { IsOptional, IsString, IsIn, IsNumber } from 'class-validator';
 
 export class PaginationDto {
   @IsOptional()
@@ -24,4 +19,8 @@ export class PaginationDto {
   @IsNumber()
   @Type(() => Number)
   limit?: number = 10;
+
+  @IsOptional()
+  @IsIn(['asc', 'desc'])
+  priceOrder?: 'asc' | 'desc';
 }
