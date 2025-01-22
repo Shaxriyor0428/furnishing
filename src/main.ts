@@ -26,6 +26,7 @@ async function start() {
         'http://localhost:3000',
         'http://167.71.195.218:3000',
         'https://shaxriyorbek.uz',
+        'https://furnishing.vercel.app',
       ];
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
