@@ -38,13 +38,19 @@ export class CreateAdminDto {
   })
   @IsString()
   @IsNotEmpty()
-  @IsStrongPassword({
-    minLength: 4,
-    minUppercase: 1,
-    minLowercase: 1,
-    minNumbers: 0,
-    minSymbols: 0,
-  })
+  @IsStrongPassword(
+    {
+      minLength: 4,
+      minUppercase: 1,
+      minLowercase: 1,
+      minNumbers: 1,
+      minSymbols: 0,
+    },
+    {
+      message:
+        'Password must include at least 4 characters, 1 uppercase letter, 1 lowercase letter, and 1 number.',
+    },
+  )
   readonly password: string;
 
   @ApiProperty({
