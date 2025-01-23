@@ -3,7 +3,7 @@ import { CreateProductDetailDto } from './dto/create-productDetail.dto';
 import { UpdateProductDetailDto } from './dto/update-productDetail.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
-import { productDetail } from './entities/productDetail.entity';
+import { ProductDetail } from './entities/productDetail.entity';
 import { PaginationDto } from 'src/admin/dto/pagination.dto';
 import { createApiResponse } from '../common/utils';
 import { Product } from '../product/entities/product.entity';
@@ -11,8 +11,8 @@ import { Product } from '../product/entities/product.entity';
 @Injectable()
 export class ProductDetailService {
   constructor(
-    @InjectRepository(productDetail)
-    private productDetailRepo: Repository<productDetail>,
+    @InjectRepository(ProductDetail)
+    private productDetailRepo: Repository<ProductDetail>,
     @InjectRepository(Product)
     private productRepo: Repository<Product>,
   ) {}

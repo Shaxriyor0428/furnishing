@@ -12,11 +12,10 @@ import {
 import { OrderDetail } from '../../order_detail/entities/order_detail.entity';
 import { Likes } from '../../like/entities/like.entity';
 import { Review } from '../../review/entities/review.entity';
-import { productDetail } from '../../productDetail/entities/productDetail.entity';
+import { ProductDetail } from '../../productDetail/entities/productDetail.entity';
 import { Rating } from '../../rating/entities/rating.entity';
 import { Category } from '../../category/entities/category.entity';
 import { Discount } from '../../discount/entities/discount.entity';
-import { Cart } from '../../cart/entities/cart.entity';
 import { CartDetail } from '../../cart_detail/entities/cart_detail.entity';
 
 @Entity('product')
@@ -72,8 +71,8 @@ export class Product {
   @OneToMany(() => Rating, (rating) => rating.product)
   ratings: Rating[];
 
-  @OneToOne(() => productDetail, (productDetail) => productDetail.product)
-  productDetail: productDetail;
+  @OneToOne(() => ProductDetail, (productDetail) => productDetail.product)
+  productDetail: ProductDetail;
 
   @Column({ type: 'simple-array', nullable: true })
   images: string[];

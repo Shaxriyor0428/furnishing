@@ -3,13 +3,10 @@ import {
   IsInt,
   IsNumber,
   IsPositive,
-  IsArray,
-  ArrayNotEmpty,
   IsString,
   IsNotEmpty,
   MaxLength,
   Min,
-  Max,
   IsOptional,
 } from 'class-validator';
 
@@ -22,32 +19,32 @@ export class CreateProductDetailDto {
   @ApiProperty({ description: 'Width in cm', example: 45.5 })
   @IsNumber()
   @IsPositive()
-  readonly withCm: number;
+  readonly with: number;
 
   @ApiProperty({ description: 'Height in cm', example: 90.2 })
   @IsNumber()
   @IsPositive()
-  readonly heghtCm: number;
+  readonly heght: number;
 
   @ApiProperty({ description: 'Depth in cm', example: 30.4 })
   @IsNumber()
   @IsPositive()
-  readonly depthCm: number;
+  readonly depth: number;
 
   @ApiProperty({ description: 'Weight in kg', example: 12.5 })
   @IsNumber()
   @IsPositive()
-  readonly weightKg: number;
+  readonly weight: number;
 
   @ApiProperty({ description: 'Seat height in cm', example: 45.0 })
   @IsNumber()
   @IsPositive()
-  readonly seatHeightCm: number;
+  readonly seatHeight: number;
 
   @ApiProperty({ description: 'Leg height in cm', example: 20.0 })
   @IsNumber()
   @IsPositive()
-  readonly legHeightCm: number;
+  readonly legHeight: number;
 
   @ApiProperty({ description: 'Country of origin', example: 'Italy' })
   @IsString()
@@ -55,14 +52,6 @@ export class CreateProductDetailDto {
   @MaxLength(100)
   readonly countryOrigin: string;
 
-  @ApiProperty({
-    description: 'Array of tags associated with the product',
-    example: [101, 102, 103],
-  })
-  @IsArray()
-  @ArrayNotEmpty()
-  @IsInt({ each: true })
-  readonly tags: number[];
 
   @ApiProperty({ description: 'Capacity of the product', example: 4 })
   @IsInt()
