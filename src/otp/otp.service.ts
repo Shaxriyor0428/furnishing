@@ -74,7 +74,7 @@ export class OtpService {
       );
     }
 
-    await this.cacheManager.set(otp, encodedData, 3 * 60 * 1000);
+    await this.cacheManager.set(otp, encodedData, 180000);
     return {
       id: customer.id,
       SMS: 'OTP code sent to your email',
@@ -91,8 +91,9 @@ export class OtpService {
     if (!customer) {
       throw new BadRequestException('Customer not found');
     }
+
     if (!data) {
-      throw new BadRequestException('Code incorrect or time expired');
+      throw new BadRequestException('Code incorrect');
     }
 
     const decodedData = await decode(data);
@@ -141,7 +142,7 @@ export class OtpService {
     });
     return {
       message: 'You have been activated',
-      id: customer.id,
+      id: newCustomer.id,
       access_token,
     };
   }
