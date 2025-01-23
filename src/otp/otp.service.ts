@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   InternalServerErrorException,
   UnauthorizedException,
@@ -9,15 +10,17 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Otp } from './entities/otp.entity';
 import { Repository } from 'typeorm';
 import { Customer } from '../customer/entities/customer.entity';
-import * as NodeCache from 'node-cache';
 import { generate } from 'otp-generator';
 import { AddMinutesToDate } from '../common/helpers/add-minute';
 import * as uuid from 'uuid';
 import { decode, encode } from '../common/helpers/crypto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { MailService } from '../mail/mail.service';
-
-const my_cache = new NodeCache();
+import { JwtService } from '@nestjs/jwt';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
+import { hash } from 'bcrypt';
+import { Response } from 'express';
 
 @Injectable()
 export class OtpService {
@@ -25,6 +28,8 @@ export class OtpService {
     @InjectRepository(Otp) private otpRepo: Repository<Otp>,
     @InjectRepository(Customer) private customerRepo: Repository<Customer>,
     private mailService: MailService,
+    private readonly jwtService: JwtService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   async create(createOtpDto: CreateOtpDto) {
@@ -43,7 +48,7 @@ export class OtpService {
     });
 
     const now = new Date();
-    const expiration_time = AddMinutesToDate(now, 5);
+    const expiration_time = AddMinutesToDate(now, 3);
     await this.otpRepo.delete({ email: customer.email });
 
     const newOtp = await this.otpRepo.save({
@@ -65,23 +70,27 @@ export class OtpService {
     } catch (error) {
       console.log('ERROR ON OTP CREATE, ', error);
       throw new InternalServerErrorException(
-        'Error sending activation otp code',
+        'Error sending activation OTP code',
       );
     }
 
-    my_cache.set(otp, encodedData, 300);
+    await this.cacheManager.set(otp, encodedData, 3 * 60 * 1000);
     return {
       id: customer.id,
-      SMS: 'Otp code sent to your email',
+      SMS: 'OTP code sent to your email',
     };
   }
 
-  async verifyOtp(verifyOtpDto: VerifyOtpDto) {
+  async verifyOtp(verifyOtpDto: VerifyOtpDto, res: Response) {
     const { otp, email } = verifyOtpDto;
 
     const currentTime = new Date();
+    const data: any = await this.cacheManager.get(otp);
+    const customer = await this.customerRepo.findOneBy({ email: email });
 
-    const data: any = my_cache.get(otp);
+    if (!customer) {
+      throw new BadRequestException('Customer not found');
+    }
     if (!data) {
       throw new BadRequestException('Code incorrect or time expired');
     }
@@ -90,14 +99,14 @@ export class OtpService {
     const details = JSON.parse(decodedData);
 
     if (details.email !== email) {
-      throw new BadRequestException('Otp has not been sent to this email');
+      throw new BadRequestException('OTP has not been sent to this email');
     }
 
     const resultOtp = await this.otpRepo.findOne({
       where: { id: details.otp_id },
     });
     if (!resultOtp) {
-      throw new BadRequestException('This otp not found');
+      throw new BadRequestException('This OTP not found');
     }
 
     if (resultOtp.verified) {
@@ -105,26 +114,63 @@ export class OtpService {
     }
 
     if (resultOtp.expiration_time < currentTime) {
-      throw new BadRequestException('This otp has expired');
+      throw new BadRequestException('This OTP has expired');
     }
 
     if (resultOtp.otp !== otp) {
-      throw new BadRequestException('Otp does not match');
+      throw new BadRequestException('OTP does not match');
     }
 
     await this.customerRepo.update({ email }, { is_active: true });
+    await this.otpRepo.update({ id: details.otp_id }, { verified: true });
+    await this.cacheManager.del(otp);
 
-    const newClient = await this.customerRepo.findOne({ where: { email } });
+    const { access_token, refresh_token } =
+      await this.customerGenerateTokens(customer);
 
-    if (!newClient) {
-      throw new BadRequestException('Client not found');
+    if (!access_token || !refresh_token) {
+      throw new BadRequestException('Error generating tokens');
     }
 
-    await this.otpRepo.update({ id: details.otp_id }, { verified: true });
-    my_cache.del(otp);
+    await this.updateRefreshToken(customer.id, refresh_token);
+
+    const newCustomer = await this.customerRepo.findOneBy({ id: customer.id });
+    res.cookie('refresh_token', refresh_token, {
+      httpOnly: true,
+      maxAge: Number(process.env.COOKIE_TIME),
+    });
     return {
       message: 'You have been activated',
-      id: newClient.id,
+      id: customer.id,
+      access_token,
     };
+  }
+
+  async customerGenerateTokens(customer: Customer) {
+    const payload = {
+      id: customer.id,
+      email: customer.email,
+      first_name: customer.first_name,
+      is_active: customer.is_active,
+    };
+    const [access_token, refresh_token] = await Promise.all([
+      this.jwtService.sign(payload, {
+        secret: process.env.ACCESS_TOKEN_KEY,
+        expiresIn: process.env.ACCESS_TOKEN_TIME,
+      }),
+      this.jwtService.sign(payload, {
+        secret: process.env.REFRESH_TOKEN_KEY,
+        expiresIn: process.env.REFRESH_TOKEN_TIME,
+      }),
+    ]);
+    return { access_token, refresh_token };
+  }
+
+  async updateRefreshToken(customerId: number, refresh_token: string) {
+    const hashed_refresh_token = await hash(refresh_token, 7);
+    await this.customerRepo.update(
+      { id: customerId },
+      { hashed_refresh_token },
+    );
   }
 }

@@ -1,9 +1,17 @@
-import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpCode,
+  HttpStatus,
+  Res,
+} from '@nestjs/common';
 import { OtpService } from './otp.service';
 import { CreateOtpDto } from './dto/create-otp.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Otp } from './entities/otp.entity';
+import { Response } from 'express';
 
 @ApiTags('Otp')
 @Controller('otp')
@@ -29,7 +37,10 @@ export class OtpController {
     type: VerifyOtpDto,
   })
   @HttpCode(HttpStatus.OK)
-  verifyOtp(@Body() verifyOtpDto: VerifyOtpDto) {
-    return this.otpService.verifyOtp(verifyOtpDto);
+  verifyOtp(
+    @Body() verifyOtpDto: VerifyOtpDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return this.otpService.verifyOtp(verifyOtpDto,res);
   }
 }
