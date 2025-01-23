@@ -7,7 +7,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Like, Repository } from 'typeorm';
+import { FindOptionsOrder, Like, Repository } from 'typeorm';
 import { PaginationDto } from 'src/admin/dto/pagination.dto';
 import { createApiResponse } from '../common/utils';
 import { Category } from '../category/entities/category.entity';
@@ -48,17 +48,24 @@ export class ProductService {
   async findAll(query: PaginationDto) {
     const { filter, order = 'desc', page, limit, priceOrder } = query;
     const skip = (page - 1) * limit;
+    console.log(order);
+    console.log(priceOrder);
 
     const where = filter
       ? [{ name: Like(`%${filter}%`) }, { description: Like(`%${filter}%`) }]
       : {};
 
+    const orderBy: FindOptionsOrder<any> = priceOrder
+      ? {
+          price: priceOrder.toUpperCase() === 'ASC' ? 'ASC' : 'DESC',
+          createdAt: order.toUpperCase() === 'ASC' ? 'ASC' : 'DESC',
+        }
+      : {
+          createdAt: order.toUpperCase() === 'ASC' ? 'ASC' : 'DESC',
+        };
     const [products, total] = await this.ProductRepo.findAndCount({
       where,
-      order: {
-        price: priceOrder?.toUpperCase() === 'ASC' ? 'ASC' : 'DESC',
-        createdAt: order.toUpperCase() === 'ASC' ? 'ASC' : 'DESC',
-      },
+      order: orderBy,
       skip,
       take: limit,
     });
