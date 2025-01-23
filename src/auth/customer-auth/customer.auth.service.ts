@@ -65,23 +65,8 @@ export class CustomerAuthService {
       throw new BadRequestException('Failed to create customer');
     }
 
-    const { access_token, refresh_token } =
-      await this.customerGenerateTokens(customer);
-
-    if (!access_token || !refresh_token) {
-      throw new BadRequestException('Error generating tokens');
-    }
-
-    await this.updateRefreshToken(customer.id, refresh_token);
-
     const newCustomer = await this.customerRepo.findOneBy({ id: customer.id });
-    res.cookie('refresh_token', refresh_token, {
-      httpOnly: true,
-      maxAge: Number(process.env.COOKIE_TIME),
-    });
-
     return createApiResponse(201, 'Customer signed up successfully', {
-      access_token,
       newCustomer,
     });
   }
