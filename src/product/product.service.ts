@@ -56,8 +56,8 @@ export class ProductService {
     const [products, total] = await this.ProductRepo.findAndCount({
       where,
       order: {
-        createdAt: order.toUpperCase() === 'ASC' ? 'ASC' : 'DESC',
         price: priceOrder?.toUpperCase() === 'ASC' ? 'ASC' : 'DESC',
+        createdAt: order.toUpperCase() === 'ASC' ? 'ASC' : 'DESC',
       },
       skip,
       take: limit,
