@@ -68,14 +68,21 @@ export class CustomerAuthService {
         throw new UnauthorizedException('Token invalid or expired');
       }
 
-      const customer = await this.customerRepo.findOneBy({
+      const response = await this.customerRepo.findOneBy({
         email: decodedData.email,
       });
-      if (!customer) {
+      if (!response) {
         throw new UnauthorizedException('Customer not found');
       }
+      const customer = {
+        first_name: response.first_name,
+        last_name: response.last_name,
+        is_active: response.is_active,
+        phone_number: response.phone_number,
+        email: response.email,
+      };
 
-      return { message: 'Token is valid', statusCode: 200, customer }; // return customer info or any response you need
+      return { message: 'Token is valid', statusCode: 200, customer };
     } catch (error) {
       throw new UnauthorizedException('Token invalid or expired');
     }
