@@ -22,10 +22,9 @@ async function start() {
     origin: (origin, callback) => {
       const allowedOrigins = [
         'http://localhost:5173',
-        'http://localhost:3001',
         'http://localhost:3000',
-        'http://167.71.195.218:3000',
         'https://shaxriyorbek.uz',
+        'https://api.shaxriyorbek.uz',
         'https://furnishing.vercel.app',
       ];
       if (!origin || allowedOrigins.includes(origin)) {

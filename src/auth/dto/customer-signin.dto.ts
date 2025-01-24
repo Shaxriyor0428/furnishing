@@ -15,10 +15,9 @@ export class CustomerSignInDto {
   @IsEmail()
   readonly email: string;
 
-
   @ApiProperty({
-    description:"Customer password",
-    example:"Qodir12"
+    description: 'Customer password',
+    example: 'Qodir12',
   })
   @IsString()
   @IsNotEmpty()
@@ -32,7 +31,7 @@ export class CustomerSignInDto {
     },
     {
       message:
-        'Password must include at least one lowercase letter, one uppercase letter, one number. example: Uzbekiston1',
+        'Password must include at least one lowercase letter, one uppercase letter, one number. example: Uzb1',
     },
   )
   readonly password: string;
