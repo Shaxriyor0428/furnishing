@@ -65,7 +65,7 @@ export class CustomerAuthService {
         secret: process.env.ACCESS_TOKEN_KEY,
       });
       if (!decodedData) {
-        throw new BadRequestException('Token invalid or expired');
+        throw new UnauthorizedException('Token invalid or expired');
       }
 
       const customer = await this.customerRepo.findOneBy({
@@ -80,7 +80,6 @@ export class CustomerAuthService {
       throw new UnauthorizedException('Token invalid or expired');
     }
   }
-
   async signUp(res: Response, createCustomerDto: CreateCustomerDto) {
     const customer = await this.customerService.create(createCustomerDto);
     if (!customer) {
