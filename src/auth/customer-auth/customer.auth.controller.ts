@@ -3,6 +3,7 @@ import {
   Body,
   Controller,
   Get,
+  Headers,
   HttpCode,
   HttpStatus,
   Post,
@@ -40,11 +41,12 @@ export class CustomerAuthController {
   }
 
   @Get('check-token')
-  async checkToken(@Query('token') token: string) {
-    if (!token) {
-      throw new BadRequestException('Token is required');
+  async checkToken(@Headers('authorization') authorization: string) {
+    if (!authorization) {
+      throw new BadRequestException('Authorization token is required');
     }
 
+    const token = authorization.replace('Bearer ', '').trim();
     return this.customerAuthService.checkToken(token);
   }
 
