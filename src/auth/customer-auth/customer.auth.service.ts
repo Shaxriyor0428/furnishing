@@ -59,6 +59,28 @@ export class CustomerAuthService {
     );
   }
 
+  async checkToken(token: string) {
+    try {
+      const decodedData = await this.jwtService.verify(token, {
+        secret: process.env.ACCESS_TOKEN_KEY,
+      });
+      if (!decodedData) {
+        throw new BadRequestException('Token invalid or expired');
+      }
+
+      const customer = await this.customerRepo.findOneBy({
+        email: decodedData.email,
+      });
+      if (!customer) {
+        throw new UnauthorizedException('Customer not found');
+      }
+
+      return { message: 'Token is valid', statusCode: 200, customer }; // return customer info or any response you need
+    } catch (error) {
+      throw new UnauthorizedException('Token invalid or expired');
+    }
+  }
+
   async signUp(res: Response, createCustomerDto: CreateCustomerDto) {
     const customer = await this.customerService.create(createCustomerDto);
     if (!customer) {

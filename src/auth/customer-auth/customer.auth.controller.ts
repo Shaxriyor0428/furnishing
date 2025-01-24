@@ -1,9 +1,12 @@
 import {
+  BadRequestException,
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
+  Query,
   Req,
   Res,
   UseGuards,
@@ -34,6 +37,15 @@ export class CustomerAuthController {
     @Body() createCustomerDto: CreateCustomerDto,
   ) {
     return await this.customerAuthService.signUp(res, createCustomerDto);
+  }
+
+  @Get('check-token')
+  async checkToken(@Query('token') token: string) {
+    if (!token) {
+      throw new BadRequestException('Token is required');
+    }
+
+    return this.customerAuthService.checkToken(token);
   }
 
   @Post('signin')
