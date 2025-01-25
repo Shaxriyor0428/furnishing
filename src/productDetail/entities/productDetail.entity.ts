@@ -1,37 +1,34 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm';
 import { Product } from '../../product/entities/product.entity';
 
-@Entity('productDetail')
-export class productDetail {
-  @PrimaryGeneratedColumn('increment', { type: 'bigint' })
+@Entity('product_detail')
+export class ProductDetail {
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Column({ type: 'integer', nullable: false })
   productId: number;
 
   @Column({ type: 'decimal', precision: 8, scale: 2, nullable: false })
-  withCm: number;
+  with: number;
 
   @Column({ type: 'decimal', precision: 8, scale: 2, nullable: false })
-  heghtCm: number;
+  heght: number;
 
   @Column({ type: 'decimal', precision: 8, scale: 2, nullable: false })
-  depthCm: number;
+  depth: number;
 
   @Column({ type: 'decimal', precision: 8, scale: 2, nullable: false })
-  weightKg: number;
+  weight: number;
 
   @Column({ type: 'decimal', precision: 8, scale: 2, nullable: false })
-  seatHeightCm: number;
+  seatHeight: number;
 
   @Column({ type: 'decimal', precision: 8, scale: 2, nullable: false })
-  legHeightCm: number;
+  legHeight: number;
 
   @Column({ type: 'varchar', length: 255, nullable: false })
   countryOrigin: string;
-
-  @Column('bigint', { array: true, nullable: false })
-  tags: number[];
 
   @Column({ type: 'integer', nullable: false })
   capacity: number;
@@ -53,6 +50,4 @@ export class productDetail {
 
   @OneToOne(() => Product, (product) => product.productDetail)
   product: Product;
-
-  
 }

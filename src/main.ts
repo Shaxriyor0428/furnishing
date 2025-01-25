@@ -22,9 +22,10 @@ async function start() {
     origin: (origin, callback) => {
       const allowedOrigins = [
         'http://localhost:5173',
-        'http://localhost:3001',
         'http://localhost:3000',
-        'http://167.71.195.218:3000',
+        'https://shaxriyorbek.uz',
+        'https://api.shaxriyorbek.uz',
+        'https://furnishing.vercel.app',
       ];
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
@@ -37,15 +38,22 @@ async function start() {
   });
 
   const config = new DocumentBuilder()
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        description: 'Enter your Bearer token',
+      },
+      'authorization',
+    )
     .setTitle('Furnishings')
-    .addBearerAuth()
     .setDescription(
       'Furnishings is an online platform designed to streamline furniture ordering and management. Users can browse a wide range of furnishings, customize their preferences, track orders, manage delivery schedules, and securely store transaction and user data.',
     )
     .setVersion('7.0')
     .addTag('Nestjs, TypeOrm, Validation')
     .build();
-
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('/api/docs', app, document);
 

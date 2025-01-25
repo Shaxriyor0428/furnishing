@@ -4,7 +4,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { AdminModule } from './admin/admin.module';
 import { AuthModule } from './auth/auth.module';
-
 import { CartModule } from './cart/cart.module';
 import { CartDetailModule } from './cart_detail/cart_detail.module';
 import { OrderAddressesModule } from './order_addresses/order_addresses.module';
@@ -23,7 +22,6 @@ import { RatingModule } from './rating/rating.module';
 import { CategoryModule } from './category/category.module';
 import { LikeModule } from './like/like.module';
 import { ReviewModule } from './review/review.module';
-import { ImagesModule } from './images/images.module';
 
 @Module({
   imports: [
@@ -44,14 +42,11 @@ import { ImagesModule } from './images/images.module';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'uploads'),
     }),
-
     AdminModule,
     AuthModule,
-
     OrderModule,
     OrderDetailModule,
     PaymentModule,
-
     CartModule,
     CartDetailModule,
     OrderAddressesModule,
@@ -65,7 +60,6 @@ import { ImagesModule } from './images/images.module';
     CategoryModule,
     LikeModule,
     ReviewModule,
-    ImagesModule,
   ],
   controllers: [],
   providers: [],

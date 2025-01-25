@@ -59,27 +59,41 @@ export class CustomerAuthService {
     );
   }
 
+  async checkToken(token: string) {
+    try {
+      const decodedData = await this.jwtService.verify(token, {
+        secret: process.env.ACCESS_TOKEN_KEY,
+      });
+      if (!decodedData) {
+        throw new UnauthorizedException('Token invalid or expired');
+      }
+
+      const response = await this.customerRepo.findOneBy({
+        email: decodedData.email,
+      });
+      if (!response) {
+        throw new UnauthorizedException('Customer not found');
+      }
+      const customer = {
+        first_name: response.first_name,
+        last_name: response.last_name,
+        is_active: response.is_active,
+        phone_number: response.phone_number,
+        email: response.email,
+      };
+
+      return { message: 'Token is valid', statusCode: 200, customer };
+    } catch (error) {
+      throw new UnauthorizedException('Token invalid or expired');
+    }
+  }
   async signUp(res: Response, createCustomerDto: CreateCustomerDto) {
     const customer = await this.customerService.create(createCustomerDto);
     if (!customer) {
       throw new BadRequestException('Failed to create customer');
     }
 
-    const { access_token, refresh_token } =
-      await this.customerGenerateTokens(customer);
-
-    if (!access_token || !refresh_token) {
-      throw new BadRequestException('Error generating tokens');
-    }
-
-    await this.updateRefreshToken(customer.id, refresh_token);
-
     const newCustomer = await this.customerRepo.findOneBy({ id: customer.id });
-    res.cookie('refresh_token', refresh_token, {
-      httpOnly: true,
-      maxAge: Number(process.env.COOKIE_TIME),
-    });
-
     return createApiResponse(201, 'Customer signed up successfully', {
       newCustomer,
     });
@@ -107,6 +121,7 @@ export class CustomerAuthService {
     const response = {
       id: customer.id,
       access_token,
+      email
     };
     await this.updateRefreshToken(customer.id, refresh_token);
     return createApiResponse(200, 'Customer signed in successfully', response);

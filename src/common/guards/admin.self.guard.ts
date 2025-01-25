@@ -1,8 +1,6 @@
 import {
-  BadRequestException,
   CanActivate,
   ExecutionContext,
-  ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -20,7 +18,7 @@ export class AdminSelfGuard implements CanActivate {
 
     const authHeader = request.headers['authorization'];
     if (!authHeader) {
-      throw new ForbiddenException('Authorization header is missing');
+      throw new UnauthorizedException('Authorization header is missing');
     }
 
     const [bearer, token] = authHeader.split(' ');
@@ -43,7 +41,7 @@ export class AdminSelfGuard implements CanActivate {
     }
     const { id } = request.params;
     if (payload.id !== Number(id)) {
-      throw new BadRequestException(
+      throw new UnauthorizedException(
         'You are not authorized to perform this action',
       );
     }

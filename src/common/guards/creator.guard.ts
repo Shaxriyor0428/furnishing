@@ -1,7 +1,6 @@
 import {
   CanActivate,
   ExecutionContext,
-  ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -19,7 +18,7 @@ export class IsCreatorGuard implements CanActivate {
 
     const authHeader = request.headers['authorization'];
     if (!authHeader) {
-      throw new ForbiddenException('Authorization header is missing');
+      throw new UnauthorizedException('Authorization header is missing');
     }
 
     const [bearer, token] = authHeader.split(' ');
@@ -38,7 +37,7 @@ export class IsCreatorGuard implements CanActivate {
     }
 
     if (!payload.is_creator) {
-      throw new ForbiddenException('Access denied: Not a creator');
+      throw new UnauthorizedException('Access denied: Not a creator');
     }
 
     request.user = payload;
