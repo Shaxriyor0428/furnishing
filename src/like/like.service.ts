@@ -108,10 +108,10 @@ export class LikeService {
     return createApiResponse(200, `Like with id ${id} removed successfully`);
   }
 
-  async getProductLikes(product_id: number) {
+  async getProductLikes(customer_id: number) {
     const likes = await this.likeRepo.find({
-      where: { productId: product_id },
+      where: { customerId: customer_id },
     });
-    return createApiResponse(200, 'All likes product', { likes });
+    return createApiResponse(200, 'All likes customer', { likes });
   }
 }
