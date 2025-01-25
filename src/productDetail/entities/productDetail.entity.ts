@@ -30,9 +30,6 @@ export class ProductDetail {
   @Column({ type: 'varchar', length: 255, nullable: false })
   countryOrigin: string;
 
-  @Column('bigint', { array: true, nullable: false })
-  tags: number[];
-
   @Column({ type: 'integer', nullable: false })
   capacity: number;
 
