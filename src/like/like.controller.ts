@@ -40,9 +40,9 @@ export class LikeController {
     description: 'ID of the product',
     example: 42,
   })
-  @Get('/product/:product_id')
-  findProductLike(@Param('product_id') product_id: string) {
-    return this.likeService.getProductLikes(+product_id);
+  @Get('/customer/:customer_id')
+  findProductLike(@Param('customer_id') customer_id: string) {
+    return this.likeService.getProductLikes(+customer_id);
   }
 
   @ApiOperation({ summary: 'Get all likes with pagination' })
