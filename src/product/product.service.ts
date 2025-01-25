@@ -87,11 +87,15 @@ export class ProductService {
   }
 
   async update(id: number, updateProductDto: UpdateProductDto, images: any[]) {
-    const product = await this.ProductRepo.preload({
-      id: id,
-      ...updateProductDto,
-    });
+    const { tags, colors, ...rest } = updateProductDto;
+    const sanitizedDto = {
+      ...(tags && tags.length > 0 && { tags }),
+      ...(colors && colors.length > 0 && { colors }),
+      ...rest,
+    };
 
+    await this.ProductRepo.update(id, sanitizedDto);
+    const product = await this.ProductRepo.findOneBy({ id });
     if (!product) {
       throw new NotFoundException(`Product with ID ${id} not found.`);
     }
@@ -108,9 +112,8 @@ export class ProductService {
       await this.ProductRepo.save(product);
     }
 
-    const updatedProduct = await this.ProductRepo.save(updateProductDto);
     return createApiResponse(200, 'Product updated successfully', {
-      updatedProduct,
+      updatedProduct: product,
     });
   }
 

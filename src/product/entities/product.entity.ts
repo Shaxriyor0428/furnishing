@@ -23,19 +23,19 @@ export class Product {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ name: 'category_id', type: 'int' })
+  @Column({ name: 'categoryId', type: 'int' })
   categoryId: number;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'varchar' })
   name: string;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'varchar' })
   description: string;
 
   @Column({ type: 'int' })
   price: number;
 
-  @Column({ name: 'average_rating', type: 'int' })
+  @Column({ name: 'averageRating', type: 'int' })
   averageRating: number;
 
   @Column({ type: 'int' })
@@ -44,7 +44,7 @@ export class Product {
   @Column({ type: 'simple-array', nullable: true })
   colors: string[];
 
-  @Column({ type: 'varchar', nullable: true, unique: true })
+  @Column({ type: 'varchar', unique: true })
   sku: string;
 
   @Column({ type: 'simple-array', nullable: true })
