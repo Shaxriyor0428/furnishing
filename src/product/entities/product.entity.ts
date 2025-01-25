@@ -23,7 +23,7 @@ export class Product {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ name: 'categoryId', type: 'int' })
+  @Column({ name: 'category_id', type: 'int' })
   categoryId: number;
 
   @Column({ type: 'varchar' })
