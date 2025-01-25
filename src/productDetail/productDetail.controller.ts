@@ -7,12 +7,14 @@ import {
   Delete,
   Query,
   Patch,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
 import { CreateProductDetailDto } from './dto/create-productDetail.dto';
 import { UpdateProductDetailDto } from './dto/update-productDetail.dto';
 import { ProductDetailService } from './productDetail.service';
 import { PaginationDto } from 'src/admin/dto/pagination.dto';
+import { AdminAccessTokenGuard } from '../common/guards/admin.access-token.guard';
 
 @ApiTags('Product Details')
 @Controller('product-detail')
@@ -26,6 +28,7 @@ export class ProductDetailController {
     description: 'Product detail created successfully.',
   })
   @ApiResponse({ status: 400, description: 'Bad Request' })
+  @UseGuards(AdminAccessTokenGuard)
   async createProductDetail(
     @Body() createProductDetailDto: CreateProductDetailDto,
   ) {
