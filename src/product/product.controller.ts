@@ -52,8 +52,8 @@ export class ProductController {
     @Body() formDataDto: FormDataDto,
     @UploadedFiles() images: any[],
   ) {
-    const tags = formDataDto.tags.split(',');
-    const colors = formDataDto.colors.split(',');
+    const tags = formDataDto?.tags ? formDataDto.tags.split(',') : [];
+    const colors = formDataDto?.colors ? formDataDto.colors.split(',') : [];
 
     return await this.productService.create(
       { ...formDataDto, tags, colors },
@@ -138,8 +138,8 @@ export class ProductController {
     @Body() updateFormDto: UpdateFormDto,
     @UploadedFiles() images: any[],
   ) {
-    const tags = updateFormDto.tags.split(',');
-    const colors = updateFormDto.colors.split(',');
+    const tags = updateFormDto?.tags ? updateFormDto.tags.split(',') : [];
+    const colors = updateFormDto?.colors ? updateFormDto.colors.split(',') : [];
     return this.productService.update(
       id,
       { ...updateFormDto, tags, colors },
