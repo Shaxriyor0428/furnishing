@@ -78,6 +78,24 @@ export class ProductService {
     });
   }
 
+  async productWithCategoryId(category_id: number) {
+    const products = await this.ProductRepo.find({
+      where: { categoryId: category_id },
+    });
+
+    if (!products || products.length === 0) {
+      throw new NotFoundException(
+        `No products found with category ID ${category_id}`,
+      );
+    }
+
+    return {
+      data: products,
+      statusCode: 200,
+      message: 'Products retrieved successfully',
+    };
+  }
+
   async findOne(id: number) {
     const product = await this.ProductRepo.findOneBy({ id });
     if (!product) {

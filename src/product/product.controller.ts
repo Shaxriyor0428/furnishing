@@ -147,6 +147,17 @@ export class ProductController {
     );
   }
 
+  @ApiOperation({ summary: 'Get a products by category id' })
+  @ApiResponse({ status: 200, description: 'Products retrieved successfully.' })
+  @Get('category/:category_id')
+  async productWithCategoryId(@Param('category_id') category_id: string) {
+    const categoryId = +category_id;
+    if (isNaN(categoryId)) {
+      throw new BadRequestException('Invalid category ID format');
+    }
+    return await this.productService.productWithCategoryId(categoryId);
+  }
+
   @UseGuards(AdminAccessTokenGuard)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a product by ID' })
