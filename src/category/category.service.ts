@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -14,6 +18,12 @@ export class CategoryService {
     private readonly categoryRepo: Repository<Category>,
   ) {}
   async create(createCategoryDto: CreateCategoryDto) {
+    const existsCategory = await this.categoryRepo.findOne({
+      where: { name: createCategoryDto.name },
+    });
+    if (existsCategory) {
+      throw new BadRequestException('Category already exists');
+    }
     const newCategory = this.categoryRepo.create(createCategoryDto);
     await this.categoryRepo.save(newCategory);
     return createApiResponse(201, 'Category created successfully', {
@@ -39,7 +49,10 @@ export class CategoryService {
   }
 
   async findOne(id: number) {
-    const category = await this.categoryRepo.findOne({ where: { id } });
+    const category = await this.categoryRepo.findOne({
+      where: { id },
+      relations: ['products'],
+    });
     if (!category) {
       throw new NotFoundException(`Category with id ${id} not found`);
     }
