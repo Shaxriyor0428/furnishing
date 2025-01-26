@@ -47,7 +47,7 @@ export class CreateProductDto {
     example: 'High-quality wireless headphones with noise cancellation',
   })
   @IsString({ message: 'Description must be a string.' })
-  @Length(1, 255, {
+  @Length(1, 1000, {
     message: 'Description must be between 1 and 255 characters.',
   })
   description: string;
