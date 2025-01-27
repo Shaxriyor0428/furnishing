@@ -1,4 +1,11 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { LikeService } from './like.service';
 import { CreateLikeDto } from './dto/create-like.dto';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -32,5 +39,14 @@ export class LikeController {
   @Get('/customer/:customer_id')
   findProductLike(@Param('customer_id') customer_id: string) {
     return this.likeService.getProductLikes(+customer_id);
+  }
+
+  @ApiResponse({ status: 201, description: 'Wishlist successfully updated.' })
+  @ApiResponse({ status: 404, description: 'Customer not found.' })
+  async saveWishlist(
+    @Param('customerId', ParseIntPipe) customerId: number,
+    @Body() wishlist: number[],
+  ) {
+    return this.likeService.saveWishList(customerId, wishlist);
   }
 }

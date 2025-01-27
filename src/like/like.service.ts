@@ -21,6 +21,38 @@ export class LikeService {
     private readonly productRepo: Repository<Product>,
   ) {}
 
+  async saveWishList(customerId: number, wishlist: number[]) {
+    const customer = await this.customerRepo.findOne({
+      where: { id: customerId },
+    });
+    if (!customer) {
+      throw new NotFoundException(`Customer with id ${customerId} not found.`);
+    }
+    const existingLikes = await this.likeRepo.find({
+      where: { customerId, productId: In(wishlist) },
+    });
+
+    const existingProductIds = existingLikes.map((like) => like.productId);
+    const newProductIds = wishlist.filter(
+      (id) => !existingProductIds.includes(id),
+    );
+    if (newProductIds.length === 0) {
+      return {
+        statusCode: 200,
+        message: 'No new products to add to the wishlist.',
+      };
+    }
+    const newLikes = newProductIds.map((productId) =>
+      this.likeRepo.create({ customerId, productId }),
+    );
+    await this.likeRepo.save(newLikes);
+    return {
+      statusCode: 201,
+      message: 'Wishlist successfully updated.',
+      data: { addedProductIds: newProductIds },
+    };
+  }
+
   async toggleLike(createLikeDto: CreateLikeDto) {
     const { customerId, productId } = createLikeDto;
 
