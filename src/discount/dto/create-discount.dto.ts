@@ -27,8 +27,8 @@ export class CreateDiscountDto {
   product_id: number;
 
   @ApiProperty({
-    description: 'Discount is exist',
-    example: 5,
+    description: 'Discount active or not',
+    example: true,
   })
   @IsBoolean()
   is_active: boolean;
