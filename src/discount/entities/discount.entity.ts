@@ -1,4 +1,10 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Product } from '../../product/entities/product.entity';
 
 @Entity('dicount')
@@ -19,5 +25,6 @@ export class Discount {
   is_active: boolean;
 
   @OneToOne(() => Product, (product) => product.discount)
+  @JoinColumn({ name: 'product_id' })
   product: Product;
 }
