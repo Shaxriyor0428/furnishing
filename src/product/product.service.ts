@@ -98,6 +98,7 @@ export class ProductService {
       order: orderBy,
       skip,
       take: limit,
+      relations: ['discount'],
     });
 
     const productsWithLikes = products.map((product) => {
