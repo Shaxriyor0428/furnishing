@@ -99,10 +99,16 @@ export class ProductController {
   @ApiResponse({ status: 200, description: 'List of products' })
   async findAll(
     @Query() query: PaginationDto,
-    @Headers('authorization') authorization: string,
+    @Headers('authorization') authorization?: string,
   ) {
-    const token = authorization.replace('Bearer ', '').trim();
-    console.log(token, authorization);
+    let token = null;
+
+    if (authorization) {
+      token = authorization.replace('Bearer ', '').trim();
+      // console.log('Token:', token);
+    } else {
+      // console.log('No token provided');
+    }
 
     return this.productService.findAll(query, token);
   }
