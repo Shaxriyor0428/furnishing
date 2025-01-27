@@ -121,7 +121,7 @@ export class CustomerAuthService {
     const response = {
       id: customer.id,
       access_token,
-      email
+      is_active: customer.is_active,
     };
     await this.updateRefreshToken(customer.id, refresh_token);
     return createApiResponse(200, 'Customer signed in successfully', response);
