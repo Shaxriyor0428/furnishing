@@ -56,6 +56,9 @@ export class Product {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
+  @Column({ type: 'boolean', default: false })
+  is_liked: boolean;
+
   @OneToMany(() => Likes, (like) => like.product)
   likes: Likes[];
 

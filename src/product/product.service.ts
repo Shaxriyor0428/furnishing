@@ -7,7 +7,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsOrder, Like, Repository } from 'typeorm';
+import { FindOptionsOrder, FindOptionsWhere, Like, Repository } from 'typeorm';
 import { PaginationDto } from 'src/admin/dto/pagination.dto';
 import { createApiResponse } from '../common/utils';
 import { Category } from '../category/entities/category.entity';
@@ -46,14 +46,29 @@ export class ProductService {
   }
 
   async findAll(query: PaginationDto) {
-    const { filter, order = 'desc', page, limit, priceOrder } = query;
-    const skip = (page - 1) * limit;
-    console.log(order);
-    console.log(priceOrder);
+    const {
+      filter,
+      order = 'desc',
+      page = 1,
+      limit = 10,
+      priceOrder,
+      categoryId,
+    } = query;
 
-    const where = filter
-      ? [{ name: Like(`%${filter}%`) }, { description: Like(`%${filter}%`) }]
-      : {};
+    const skip = (page - 1) * limit;
+
+    const where: FindOptionsWhere<any>[] = [];
+
+    if (filter) {
+      where.push(
+        { name: Like(`%${filter}%`) },
+        { description: Like(`%${filter}%`) },
+      );
+    }
+
+    if (categoryId) {
+      where.push({ categoryId });
+    }
 
     const orderBy: FindOptionsOrder<any> = priceOrder
       ? {
@@ -63,14 +78,15 @@ export class ProductService {
       : {
           createdAt: order.toUpperCase() === 'ASC' ? 'ASC' : 'DESC',
         };
+
     const [products, total] = await this.ProductRepo.findAndCount({
-      where,
+      where: where.length ? where : undefined,
       order: orderBy,
       skip,
       take: limit,
     });
 
-    return createApiResponse(200, 'Product retrieved successfully', {
+    return createApiResponse(200, 'Products retrieved successfully', {
       products,
       skip,
       limit,
