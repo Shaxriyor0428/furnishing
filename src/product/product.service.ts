@@ -12,12 +12,16 @@ import { PaginationDto } from 'src/admin/dto/pagination.dto';
 import { createApiResponse } from '../common/utils';
 import { Category } from '../category/entities/category.entity';
 import { deleteFiles, saveFile } from '../common/helpers/saveImage';
+import { Likes } from '../like/entities/like.entity';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class ProductService {
   constructor(
     @InjectRepository(Product) private ProductRepo: Repository<Product>,
     @InjectRepository(Category) private categoryRepo: Repository<Category>,
+    @InjectRepository(Likes) private likeRepo: Repository<Likes>,
+    private readonly jwtService: JwtService,
   ) {}
 
   async create(createProductDto: CreateProductDto, images: any[]) {
@@ -45,7 +49,7 @@ export class ProductService {
     return createApiResponse(201, 'Product created successfully', { product });
   }
 
-  async findAll(query: PaginationDto) {
+  async findAll(query: PaginationDto, token: string) {
     const {
       filter,
       order = 'desc',
@@ -56,6 +60,16 @@ export class ProductService {
     } = query;
 
     const skip = (page - 1) * limit;
+
+    let likedProductIds = [];
+    if (token) {
+      const { id } = await this.jwtService.decode(token);
+      if (!id) {
+        throw new NotFoundException('Token invalid or expired');
+      }
+      const likes = await this.likeRepo.find({ where: { customerId: id } });
+      likedProductIds = likes.map((like) => like.productId);
+    }
 
     const where: FindOptionsWhere<any>[] = [];
 
@@ -86,27 +100,18 @@ export class ProductService {
       take: limit,
     });
 
+    const productsWithLikes = products.map((product) => {
+      return {
+        ...product,
+        is_liked: likedProductIds.includes(product.id),
+      };
+    });
+
     return createApiResponse(200, 'Products retrieved successfully', {
-      products,
+      products: productsWithLikes,
       skip,
       limit,
       total,
-    });
-  }
-
-  async productWithCategoryId(category_id: number) {
-    const products = await this.ProductRepo.find({
-      where: { categoryId: category_id },
-    });
-
-    if (!products || products.length === 0) {
-      throw new NotFoundException(
-        `No products found with category ID ${category_id}`,
-      );
-    }
-
-    return createApiResponse(200, 'Products retrieved successfully', {
-      products,
     });
   }
 
