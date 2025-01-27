@@ -1,8 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateLikeDto } from './dto/create-like.dto';
 import { UpdateLikeDto } from './dto/update-like.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Likes } from './entities/like.entity';
 import { Customer } from '../customer/entities/customer.entity';
 import { createApiResponse } from '../common/utils';
@@ -100,18 +104,39 @@ export class LikeService {
   }
 
   async remove(id: number) {
-    const like = await this.likeRepo.findOne({ where: { id } });
-    if (!like) {
+    const result = await this.likeRepo.delete(id);
+    if (result.affected === 0) {
       throw new NotFoundException(`Like with id ${id} not found`);
     }
-    await this.likeRepo.delete(id);
     return createApiResponse(200, `Like with id ${id} removed successfully`);
   }
 
   async getProductLikes(customer_id: number) {
+    const customer = await this.customerRepo.findOneBy({ id: customer_id });
+    if (!customer) {
+      throw new BadRequestException(`User with ID: ${customer_id} not found.`);
+    }
+
     const likes = await this.likeRepo.find({
       where: { customerId: customer_id },
     });
-    return createApiResponse(200, 'All likes customer', { likes });
+
+    const productIds = likes.map((like) => like.productId);
+    if (productIds.length === 0) {
+      return createApiResponse(
+        200,
+        'No liked products found for the customer',
+        {
+          products: [],
+        },
+      );
+    }
+
+    const products = await this.productRepo.find({
+      where: { id: In(productIds) },
+    });
+    return createApiResponse(200, 'All liked products for the customer', {
+      products,
+    });
   }
 }
