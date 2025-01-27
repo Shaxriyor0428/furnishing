@@ -64,8 +64,8 @@ export class LikeService {
       where: { customerId: customer_id },
     });
 
-    const productIds = likes.map((like) => like.productId);
-    if (productIds.length === 0) {
+    const likedProductIds = likes.map((like) => like.productId);
+    if (likedProductIds.length === 0) {
       return createApiResponse(
         200,
         'No liked products found for the customer',
@@ -76,10 +76,16 @@ export class LikeService {
     }
 
     const products = await this.productRepo.find({
-      where: { id: In(productIds), is_liked: true },
+      where: { id: In(likedProductIds) },
     });
+
+    const productsWithLikes = products.map((product) => ({
+      ...product,
+      is_liked: likedProductIds.includes(product.id),
+    }));
+
     return createApiResponse(200, 'All liked products for the customer', {
-      products,
+      products: productsWithLikes,
     });
   }
 }
