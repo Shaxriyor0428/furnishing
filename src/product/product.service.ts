@@ -89,11 +89,9 @@ export class ProductService {
       );
     }
 
-    return {
-      data: products,
-      statusCode: 200,
-      message: 'Products retrieved successfully',
-    };
+    return createApiResponse(200, 'Products retrieved successfully', {
+      products,
+    });
   }
 
   async findOne(id: number) {
