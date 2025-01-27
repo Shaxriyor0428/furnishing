@@ -4,23 +4,28 @@ import { IsOptional, IsString, IsIn, IsNumber } from 'class-validator';
 export class PaginationDto {
   @IsOptional()
   @IsString()
-  filter?: string;
+  readonly filter?: string;
 
   @IsOptional()
   @IsIn(['asc', 'desc'])
-  order?: 'asc' | 'desc';
+  readonly order?: 'asc' | 'desc';
 
   @IsOptional()
   @IsNumber()
   @Type(() => Number)
-  page?: number = 1;
+  readonly page?: number = 1;
 
   @IsOptional()
   @IsNumber()
   @Type(() => Number)
-  limit?: number = 10;
+  readonly limit?: number = 10;
 
   @IsOptional()
   @IsIn(['asc', 'desc'])
-  priceOrder?: 'asc' | 'desc';
+  readonly priceOrder?: 'asc' | 'desc';
+
+  @IsOptional()
+  @IsNumber()
+  @Type(() => Number)
+  readonly categoryId: number;
 }
