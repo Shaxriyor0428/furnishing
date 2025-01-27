@@ -5,6 +5,7 @@ export class CreateReviewDto {
   @ApiProperty({
     description: 'The ID of the customer writing the review',
     example: 1,
+    type: Number,
   })
   @IsInt({ message: 'customerId must be an integer' })
   @IsPositive({ message: 'customerId must be a positive number' })
@@ -14,6 +15,7 @@ export class CreateReviewDto {
   @ApiProperty({
     description: 'The ID of the product being reviewed',
     example: 42,
+    type: Number,
   })
   @IsInt({ message: 'productId must be an integer' })
   @IsPositive({ message: 'productId must be a positive number' })
@@ -22,9 +24,8 @@ export class CreateReviewDto {
 
   @ApiProperty({
     description: 'Readonly comment field',
-    type: String,
-    readOnly: true,
     example: 'This is a readonly comment',
+    type: String,
   })
   @IsString()
   readonly comment: string;
