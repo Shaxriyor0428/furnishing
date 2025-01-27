@@ -76,7 +76,7 @@ export class LikeService {
     }
 
     const products = await this.productRepo.find({
-      where: { id: In(productIds) },
+      where: { id: In(productIds), is_liked: true },
     });
     return createApiResponse(200, 'All liked products for the customer', {
       products,
