@@ -11,6 +11,7 @@ import {
   BadRequestException,
   UploadedFiles,
   Patch,
+  Headers,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
 import { ProductService } from './product.service';
@@ -96,8 +97,14 @@ export class ProductController {
     example: 10,
   })
   @ApiResponse({ status: 200, description: 'List of products' })
-  async findAll(@Query() query: PaginationDto) {
-    return this.productService.findAll(query);
+  async findAll(
+    @Query() query: PaginationDto,
+    @Headers('authorization') authorization: string,
+  ) {
+    const token = authorization.replace('Bearer ', '').trim();
+    console.log(token, authorization);
+
+    return this.productService.findAll(query, token);
   }
 
   @Get(':id')
@@ -145,17 +152,6 @@ export class ProductController {
       { ...updateFormDto, tags, colors },
       images,
     );
-  }
-
-  @ApiOperation({ summary: 'Get a products by category id' })
-  @ApiResponse({ status: 200, description: 'Products retrieved successfully.' })
-  @Get('category/:category_id')
-  async productWithCategoryId(@Param('category_id') category_id: string) {
-    const categoryId = +category_id;
-    if (isNaN(categoryId)) {
-      throw new BadRequestException('Invalid category ID format');
-    }
-    return await this.productService.productWithCategoryId(categoryId);
   }
 
   @UseGuards(AdminAccessTokenGuard)
