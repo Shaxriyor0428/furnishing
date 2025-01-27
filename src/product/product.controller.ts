@@ -109,9 +109,11 @@ export class ProductController {
     } else {
       // console.log('No token provided');
     }
+    
 
     return this.productService.findAll(query, token);
   }
+  
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a single product by ID' })
