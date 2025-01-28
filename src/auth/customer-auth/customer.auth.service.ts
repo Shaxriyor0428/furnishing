@@ -118,6 +118,7 @@ export class CustomerAuthService {
       httpOnly: true,
       maxAge: +process.env.COOKIE_TIME,
       sameSite: 'strict',
+      secure: process.env.NODE_ENV === 'production',
     });
 
     const response = {
