@@ -48,6 +48,7 @@ export class LikeController {
     @Param('customerId', ParseIntPipe) customerId: number,
     @Body() wishlist: number[],
   ) {
+   
     return this.likeService.saveWishList(customerId, wishlist);
   }
 }
