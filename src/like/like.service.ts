@@ -109,6 +109,12 @@ export class LikeService {
 
     const products = await this.productRepo.find({
       where: { id: In(likedProductIds) },
+      relations: ['discount'],
+      select: {
+        discount: {
+          percent: true,
+        },
+      },
     });
 
     const productsWithLikes = products.map((product) => ({
