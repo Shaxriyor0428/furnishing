@@ -17,22 +17,17 @@ export class CustomerRefreshTokenGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
 
     const refresh_token = request.cookies?.refresh_token;
-    console.log(request);
-    console.log(request?.cookies);
-    console.log(refresh_token);
-    
-    // if (!refresh_token) {
-    //   throw new UnauthorizedException('Unauthorized');
-    // }
+    if (!refresh_token) {
+      throw new UnauthorizedException('Unauthorized');
+    }
 
     const verifyToken = this.jwtService.decode(refresh_token);
-    // if (!verifyToken) {
-    //   throw new ForbiddenException('Token expired');
-    // }
+    if (!verifyToken) {
+      throw new ForbiddenException('Token expired');
+    }
     verifyToken['refresh_token'] = refresh_token;
     request.user = verifyToken;
-    console.log(request.user);
-    
-    return false;
+
+    return true;
   }
 }
