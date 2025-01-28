@@ -117,6 +117,8 @@ export class CustomerAuthService {
     res.cookie('refresh_token', refresh_token, {
       httpOnly: true,
       maxAge: +process.env.COOKIE_TIME,
+      sameSite: 'strict',
+      secure: true,
     });
 
     const response = {
