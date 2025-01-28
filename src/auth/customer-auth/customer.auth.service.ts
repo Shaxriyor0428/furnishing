@@ -75,7 +75,7 @@ export class CustomerAuthService {
         throw new UnauthorizedException('Customer not found');
       }
       const customer = {
-        id:response.id,
+        id: response.id,
         first_name: response.first_name,
         last_name: response.last_name,
         is_active: response.is_active,
