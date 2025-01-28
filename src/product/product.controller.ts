@@ -102,18 +102,11 @@ export class ProductController {
     @Headers('authorization') authorization?: string,
   ) {
     let token = null;
-
     if (authorization) {
       token = authorization.replace('Bearer ', '').trim();
-      // console.log('Token:', token);
-    } else {
-      // console.log('No token provided');
     }
-    
-
     return this.productService.findAll(query, token);
   }
-  
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a single product by ID' })

@@ -63,14 +63,16 @@ export class ProductService {
 
     let likedProductIds = [];
     if (token) {
-      const { id } = await this.jwtService.decode(token);
-      if (!id) {
-        throw new NotFoundException('Token invalid or expired');
-      }
-      const likes = await this.likeRepo.find({ where: { customerId: id } });
-      likedProductIds = likes.map((like) => like.productId);
+      try {
+        const { id } = this.jwtService.decode(token) as { id: string };
+        if (id) {
+          const likes = await this.likeRepo.find({
+            where: { customerId: +id },
+          });
+          likedProductIds = likes.map((like) => like.productId);
+        }
+      } catch (error) {}
     }
-
     const where: FindOptionsWhere<any>[] = [];
 
     if (filter) {
