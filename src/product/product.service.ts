@@ -115,11 +115,13 @@ export class ProductService {
       };
     });
 
+    const totalPages = Math.ceil(total / limit);
     return createApiResponse(200, 'Products retrieved successfully', {
       products: productsWithLikes,
       skip,
       limit,
       total,
+      totalPages,
     });
   }
 
