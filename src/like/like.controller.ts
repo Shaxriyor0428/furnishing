@@ -41,6 +41,7 @@ export class LikeController {
     return this.likeService.getProductLikes(+customer_id);
   }
 
+  @Post('/wishlist/:customerId')
   @ApiResponse({ status: 201, description: 'Wishlist successfully updated.' })
   @ApiResponse({ status: 404, description: 'Customer not found.' })
   async saveWishlist(
