@@ -14,11 +14,8 @@ export class OrderAddressesService {
     private readonly orderAddressRepo: Repository<OrderAddress>,
   ) {}
   async create(createOrderAddressDto: CreateOrderAddressDto) {
-    const newOrderAddress = this.orderAddressRepo.create(createOrderAddressDto);
-    await this.orderAddressRepo.save(newOrderAddress);
-    return createApiResponse(201, 'Order-Address created successfully', {
-      newOrderAddress,
-    });
+    const address = this.orderAddressRepo.save(createOrderAddressDto);
+    return address;
   }
 
   async findAll(paginationDto: PaginationDto) {

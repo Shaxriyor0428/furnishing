@@ -26,8 +26,8 @@ export class OrderAddress {
   @Column({ type: 'varchar' })
   street: string;
 
-  @Column({ type: 'varchar' })
-  zip_code: string;
+  @Column()
+  zip_code: number;
 
   @Column({ type: 'varchar', nullable: true })
   additional_information?: string;

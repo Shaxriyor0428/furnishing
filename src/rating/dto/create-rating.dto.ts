@@ -1,10 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsNotEmpty, IsNumber } from 'class-validator';
 
 export class CreateRatingDto {
   @ApiProperty({
     description: "Product's rating",
-    example: 4,
+    example: 4.4,
   })
   @IsNumber()
   readonly rating: number;
@@ -13,6 +14,7 @@ export class CreateRatingDto {
     description: "Product's ID",
     example: 1,
   })
+  @Type(() => Number)
   @IsNumber()
   readonly product_id: number;
 
@@ -20,5 +22,8 @@ export class CreateRatingDto {
     description: "Customer's ID",
     example: 3,
   })
+  @IsNumber()
+  @IsNotEmpty()
+  @Type(() => Number)
   readonly customer_id: number;
 }

@@ -14,11 +14,8 @@ export class OrderDetailService {
     private readonly orderDetailRepo: Repository<OrderDetail>,
   ) {}
   async create(createOrderDetailDto: CreateOrderDetailDto) {
-    const newOrderDetail = this.orderDetailRepo.create(createOrderDetailDto);
-    await this.orderDetailRepo.save(newOrderDetail);
-    return createApiResponse(201, 'Order-Detail created successfully', {
-      newOrderDetail,
-    });
+    const order_detail = this.orderDetailRepo.save(createOrderDetailDto);
+    return order_detail;
   }
 
   async findAll(paginationDto: PaginationDto) {
@@ -26,7 +23,7 @@ export class OrderDetailService {
     const calculatedSkip = (page - 1) * limit;
     const total = await this.orderDetailRepo.count();
     const orderDetail = await this.orderDetailRepo.find({
-      relations: ['order', 'product'], 
+      relations: ['order', 'product'],
       skip: calculatedSkip,
       take: limit,
     });

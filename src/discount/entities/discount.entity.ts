@@ -15,7 +15,7 @@ export class Discount {
   @Column({ type: 'varchar' })
   name: string;
 
-  @Column({ type: 'int' })
+  @Column({ type: 'int', default: 0 })
   percent: number;
 
   @Column({ type: 'int' })
