@@ -7,10 +7,11 @@ import { OrderController } from './order.controller';
 import { OrderService } from './order.service';
 import { OrderAddressesModule } from '../order_addresses/order_addresses.module';
 import { OrderDetailModule } from '../order_detail/order_detail.module';
+import { Product } from '../product/entities/product.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Order, Customer]),
+    TypeOrmModule.forFeature([Order, Customer, Product]),
     JwtModule,
     OrderAddressesModule,
     OrderDetailModule,
