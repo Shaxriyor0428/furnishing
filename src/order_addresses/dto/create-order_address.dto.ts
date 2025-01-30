@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsDate,
+} from 'class-validator';
 
 export class CreateOrderAddressDto {
   @ApiProperty({
@@ -7,19 +13,21 @@ export class CreateOrderAddressDto {
     example: 1,
   })
   @IsNumber()
-  readonly customer_id: number;
+  @IsOptional()
+  @IsNotEmpty()
+  readonly customer_id?: number;
 
   @ApiProperty({
-    description: 'Region',
-    example: 'Region',
+    description: 'Region (State or Province)',
+    example: 'New York',
   })
   @IsNotEmpty()
   @IsString()
   readonly region: string;
 
   @ApiProperty({
-    description: 'District',
-    example: 'District',
+    description: 'District (City or Borough within the Region)',
+    example: 'Brooklyn',
   })
   @IsNotEmpty()
   @IsString()
@@ -27,7 +35,7 @@ export class CreateOrderAddressDto {
 
   @ApiProperty({
     description: 'Street',
-    example: 'Street',
+    example: '123 Main St',
   })
   @IsNotEmpty()
   @IsString()
@@ -35,17 +43,25 @@ export class CreateOrderAddressDto {
 
   @ApiProperty({
     description: 'Zip Code',
-    example: 'Zip Code',
+    example: 11201,
   })
   @IsNotEmpty()
-  @IsString()
-  readonly zip_code: string;
+  @IsNumber()
+  readonly zip_code: number;
 
   @ApiProperty({
     description: 'Additional Information',
-    example: 'Additional Information',
+    example: 'Apartment 4B, near Central Park',
   })
   @IsOptional()
   @IsString()
   readonly additional_information?: string;
+
+  @ApiProperty({
+    description: 'Order date and time',
+    example: '2025-01-30T14:25:36.000Z',
+  })
+  @IsNotEmpty()
+  @IsDate()
+  readonly order_date: Date;
 }

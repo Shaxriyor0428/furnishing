@@ -13,7 +13,7 @@ export class Rating {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'int' })
+  @Column({ type: 'decimal', precision: 3, scale: 1, default: 0 })
   rating: number;
 
   @Column({ type: 'int' })

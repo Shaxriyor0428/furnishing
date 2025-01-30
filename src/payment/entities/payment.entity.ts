@@ -30,7 +30,7 @@ export class Payment {
   @Column({ type: 'enum', enum: PaymentStatus, default: PaymentStatus.PENDING })
   status: PaymentStatus;
 
-  @OneToOne(() => Order, (order) => order.orderDetails)
+  @OneToOne(() => Order, (order) => order.order_details)
   @JoinColumn({ name: 'orderId' })
   order: Order;
 }

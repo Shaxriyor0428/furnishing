@@ -3,7 +3,6 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Order } from '../../order/entities/order.entity';
@@ -23,10 +22,7 @@ export class OrderDetail {
   @Column({ type: 'int' })
   quantity: number;
 
-  @Column({ type: 'int' })
-  price: number;
-
-  @ManyToOne(() => Order, (order) => order.orderDetails)
+  @ManyToOne(() => Order, (order) => order.order_details)
   @JoinColumn({ name: 'orderId' })
   order: Order;
 

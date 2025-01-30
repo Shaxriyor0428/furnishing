@@ -1,43 +1,34 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsNotEmpty, IsPositive, ValidateNested } from 'class-validator';
+import { IsInt, IsNotEmpty, IsNumber } from 'class-validator';
 import { Type } from 'class-transformer';
-import { Order } from '../../order/entities/order.entity';
 
 export class CreateOrderDetailDto {
   @ApiProperty({
-    description: 'ID of the product in the order detail',
+    description: 'Product ID in the order detail',
     type: Number,
-    example: 1,
+    example: 101,
   })
-  @IsInt()
-  @IsPositive()
+  @Type(() => Number)
+  @IsNumber()
   @IsNotEmpty()
   productId: number;
 
   @ApiProperty({
-    description: 'Order associated with this order detail',
-    type: Order,
+    description: 'Order ID associated with this order detail',
+    type: Number,
+    example: 5001,
   })
   @IsNotEmpty()
+  @Type(() => Number)
+  @IsNumber()
   orderId: number;
 
   @ApiProperty({
-    description: 'Quantity of the product in the order detail',
+    description: 'Quantity of the product in the order',
     type: Number,
-    example: 2,
+    example: 3,
   })
   @IsInt()
-  @IsPositive()
   @IsNotEmpty()
   quantity: number;
-
-  @ApiProperty({
-    description: 'Price of the product in the order detail',
-    type: Number,
-    example: 100,
-  })
-  @IsInt()
-  @IsPositive()
-  @IsNotEmpty()
-  price: number;
 }

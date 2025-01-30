@@ -3,7 +3,6 @@ import {
   IsEnum,
   IsNotEmpty,
   IsNumber,
-  IsOptional,
   IsDate,
   IsPositive,
 } from 'class-validator';
@@ -40,14 +39,14 @@ export class CreateOrderDto {
   status: OrderStatus;
 
   @ApiProperty({
-    description: 'The total amount of the order',
+    description: 'The total price of the order',
     type: Number,
     example: 150.75,
   })
   @IsNotEmpty()
+  @Type(() => Number)
   @IsNumber()
-  @IsPositive()
-  total_amount: number;
+  total_price: number;
 
   @ApiProperty({
     description: 'The date when the order was placed',

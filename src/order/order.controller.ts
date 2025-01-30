@@ -16,15 +16,22 @@ import { UpdateOrderDto } from './dto/update-order.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Order } from './entities/order.entity';
 import { PaginationDto } from '../admin/dto/pagination.dto';
+import { OrderDto } from './dto/order.dto';
 
 @ApiTags('Order')
 @Controller('order')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
+  @ApiOperation({ summary: 'Create order ' })
+  @ApiResponse({
+    status: 201,
+    description: 'Order created successfully',
+    type: OrderDto,
+  })
   @Post()
-  create(@Body() createOrderDto: CreateOrderDto) {
-    return this.orderService.create(createOrderDto);
+  create(@Body() orderDto: OrderDto) {
+    return this.orderService.create(orderDto);
   }
 
   @Get()
