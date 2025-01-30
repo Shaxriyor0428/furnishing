@@ -135,7 +135,7 @@ export class OrderService {
           email: true,
         },
         order_address: {
-          additional_information: true,
+          additional_info: true,
           district: true,
           region: true,
           street: true,
