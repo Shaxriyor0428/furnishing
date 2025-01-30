@@ -61,12 +61,15 @@ export class OrderService {
         });
       }),
     );
-    const response = {
+    if (!new_order_details) {
+      throw new BadRequestException('Error on creating order details');
+    }
+    const result = {
       order,
       new_address,
       order_details: new_order_details,
     };
-    return createApiResponse(201, 'Order created successfully', response);
+    return createApiResponse(201, 'Order created successfully', { result });
   }
 
   async findAll(paginationDto: PaginationDto) {
@@ -80,7 +83,7 @@ export class OrderService {
         'customer',
         'order_details',
         'order_details.product',
-      ], // productni ham qo'shish
+      ],
       select: {
         customer: {
           first_name: true,
@@ -98,10 +101,9 @@ export class OrderService {
         order_details: {
           quantity: true,
           productId: true,
-          // Agar kerak bo'lsa, 'product'ni ham tanlashingiz mumkin
           product: {
-            name: true, // Misol uchun, product nomi
-            price: true, // va boshqa maydonlar
+            name: true,
+            price: true,
           },
         },
       },

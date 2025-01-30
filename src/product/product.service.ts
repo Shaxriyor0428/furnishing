@@ -109,8 +109,11 @@ export class ProductService {
     });
 
     const productsWithLikes = products.map((product) => {
+      const discountedPrice =
+        product.price - (product.price * product.discount.percent) / 100;
       return {
         ...product,
+        price: discountedPrice,
         is_liked: likedProductIds.includes(product.id),
       };
     });
