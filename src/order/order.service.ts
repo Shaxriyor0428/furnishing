@@ -13,19 +13,22 @@ import { Customer } from '../customer/entities/customer.entity';
 import { OrderDto } from './dto/order.dto';
 import { OrderAddressesService } from '../order_addresses/order_addresses.service';
 import { OrderDetailService } from '../order_detail/order_detail.service';
+import { Product } from '../product/entities/product.entity';
 
 @Injectable()
 export class OrderService {
   constructor(
     @InjectRepository(Order) private readonly orderRepo: Repository<Order>,
+    @InjectRepository(Product)
+    private readonly productRepo: Repository<Product>,
     @InjectRepository(Customer)
     private readonly customerRepo: Repository<Customer>,
     private readonly orderAddressService: OrderAddressesService,
     private readonly orderDetailService: OrderDetailService,
   ) {}
+
   async create(orderDto: OrderDto) {
     const { address, customerId, order_details, total_price } = orderDto;
-    console.log(orderDto);
 
     const customer = await this.customerRepo.findOne({
       where: { id: customerId },
@@ -43,6 +46,24 @@ export class OrderService {
       throw new BadRequestException('Error on creating address');
     }
 
+    for (const order_detail of order_details) {
+      const product = await this.productRepo.findOne({
+        where: { id: order_detail.productId },
+      });
+
+      if (!product) {
+        throw new NotFoundException(
+          `Product with id ${order_detail.productId} not found`,
+        );
+      }
+
+      if (product.stock < order_detail.quantity) {
+        throw new BadRequestException(
+          `Not enough stock for product: ${product.name} (Available: ${product.stock}, Requested: ${order_detail.quantity})`,
+        );
+      }
+    }
+
     const order = await this.orderRepo.save({
       customerId,
       orderAddressId: new_address?.id,
@@ -55,20 +76,42 @@ export class OrderService {
 
     const new_order_details = await Promise.all(
       order_details.map(async (order_detail) => {
+        const product = await this.productRepo.findOne({
+          where: { id: order_detail.productId },
+        });
+
+        if (!product) {
+          throw new NotFoundException(
+            `Product with id ${order_detail.productId} not found`,
+          );
+        }
+
+        if (product.stock < order_detail.quantity) {
+          throw new BadRequestException(
+            `Not enough stock for product: ${product.name} (Available: ${product.stock}, Requested: ${order_detail.quantity})`,
+          );
+        }
+
+        product.stock -= order_detail.quantity;
+        await this.productRepo.save(product);
+
         return this.orderDetailService.create({
           ...order_detail,
-          orderId: order?.id,
+          orderId: order.id,
         });
       }),
     );
+
     if (!new_order_details) {
       throw new BadRequestException('Error on creating order details');
     }
+
     const result = {
       order,
       new_address,
       order_details: new_order_details,
     };
+
     return createApiResponse(201, 'Order created successfully', { result });
   }
 
