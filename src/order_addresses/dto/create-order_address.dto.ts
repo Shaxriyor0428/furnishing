@@ -55,7 +55,7 @@ export class CreateOrderAddressDto {
   })
   @IsOptional()
   @IsString()
-  readonly additional_information?: string;
+  readonly additional_info?: string;
 
   @ApiProperty({
     description: 'Order date and time',

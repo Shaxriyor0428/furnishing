@@ -30,7 +30,7 @@ export class OrderAddress {
   zip_code: number;
 
   @Column({ type: 'varchar', nullable: true })
-  additional_information?: string;
+  additional_info?: string;
 
   @OneToMany(() => Order, (order) => order.order_address)
   orders: Order[];
