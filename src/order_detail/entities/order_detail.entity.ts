@@ -29,5 +29,6 @@ export class OrderDetail {
   @ManyToOne(() => Product, (product) => product.orderDetails, {
     nullable: true,
   })
+  @JoinColumn({ name: 'productId' })
   product: Product;
 }
