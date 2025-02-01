@@ -48,6 +48,20 @@ export class ProductService {
 
     return createApiResponse(201, 'Product created successfully', { product });
   }
+  async updateDiscountedPrice(productId: number) {
+    const product = await this.ProductRepo.findOne({
+      where: { id: productId },
+      relations: ['discount'],
+    });
+
+    if (!product) return;
+
+    const discountedPrice =
+      product.price - (product.price * (product?.discount?.percent || 0)) / 100;
+    if (product.discount && product.price !== discountedPrice) {
+      await this.ProductRepo.update(productId, { price: discountedPrice });
+    }
+  }
 
   async findAll(query: PaginationDto, token: string) {
     const {
@@ -109,14 +123,15 @@ export class ProductService {
     });
 
     const productsWithLikes = products.map((product) => {
-      const discountedPrice =
-        product.price - (product.price * product?.discount?.percent) / 100;
       return {
         ...product,
-        price: discountedPrice,
         is_liked: likedProductIds.includes(product.id),
       };
     });
+
+    for (const product of products) {
+      await this.updateDiscountedPrice(product.id);
+    }
 
     const totalPages = Math.ceil(total / limit);
     return createApiResponse(200, 'Products retrieved successfully', {
