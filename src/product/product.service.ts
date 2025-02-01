@@ -7,7 +7,13 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsOrder, FindOptionsWhere, Like, Repository } from 'typeorm';
+import {
+  FindOptionsOrder,
+  FindOptionsWhere,
+  In,
+  Like,
+  Repository,
+} from 'typeorm';
 import { PaginationDto } from 'src/admin/dto/pagination.dto';
 import { createApiResponse } from '../common/utils';
 import { Category } from '../category/entities/category.entity';
@@ -48,24 +54,27 @@ export class ProductService {
 
     return createApiResponse(201, 'Product created successfully', { product });
   }
-  async updateDiscountedPrice(productId: number) {
-    const product = await this.ProductRepo.findOne({
-      where: { id: productId },
+  async updateDiscountedPrices(productIds: number[]) {
+    const products = await this.ProductRepo.find({
+      where: { id: In(productIds) },
       relations: ['discount'],
     });
 
-    if (!product) return;
+    const updates = products.map((product) => {
+      const discountedPrice = parseFloat(
+        (
+          product.price -
+          (product.price * (product?.discount?.percent || 0)) / 100
+        ).toFixed(2),
+      );
 
-    const discountedPrice = parseFloat(
-      (
-        product.price -
-        (product.price * (product?.discount?.percent || 0)) / 100
-      ).toFixed(2),
-    );
+      if (product.discount && product.price !== discountedPrice) {
+        return this.ProductRepo.update(product.id, { price: discountedPrice });
+      }
+      return Promise.resolve();
+    });
 
-    if (product.discount && product.price !== discountedPrice) {
-      await this.ProductRepo.update(productId, { price: discountedPrice });
-    }
+    await Promise.all(updates);
   }
 
   async findAll(query: PaginationDto, token: string) {
@@ -134,9 +143,7 @@ export class ProductService {
       };
     });
 
-    for (const product of products) {
-      await this.updateDiscountedPrice(product.id);
-    }
+    await this.updateDiscountedPrices(products.map((product) => product.id));
 
     const totalPages = Math.ceil(total / limit);
     return createApiResponse(200, 'Products retrieved successfully', {
