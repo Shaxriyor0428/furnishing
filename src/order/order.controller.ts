@@ -52,8 +52,8 @@ export class OrderController {
     description: 'Get order by id retrived successfully',
     type: Order,
   })
-  findOne(@Param('id') id: string) {
-    return this.orderService.findOne(+id);
+  findByCustomerId(@Param('id') customer_id: string) {
+    return this.orderService.findByCustomerId(+customer_id);
   }
 
   @Patch(':id')

@@ -162,14 +162,48 @@ export class OrderService {
     });
   }
 
-  async findOne(id: number) {
-    const order = await this.orderRepo.findOne({ where: { id } });
+  async findByCustomerId(customer_id: number) {
+    const order = await this.orderRepo.find({
+      where: { customerId: customer_id },
+      relations: [
+        'order_address',
+        'customer',
+        'order_details',
+        'order_details.product',
+      ],
+      select: {
+        customer: {
+          first_name: true,
+          last_name: true,
+          phone_number: true,
+          email: true,
+        },
+        order_address: {
+          additional_info: true,
+          district: true,
+          region: true,
+          street: true,
+          zip_code: true,
+        },
+        order_details: {
+          quantity: true,
+          product: {
+            images: true,
+            averageRating: true,
+            description: true,
+            stock: true,
+            name: true,
+            price: true,
+          },
+        },
+      },
+    });
     if (!order) {
-      throw new NotFoundException(`Order with id ${id} not found`);
+      throw new NotFoundException(`Order with id ${customer_id} not found`);
     }
     return createApiResponse(
       200,
-      `Order with id ${id} retrieved successfully`,
+      `Order with id ${customer_id} retrieved successfully`,
       { order },
     );
   }
