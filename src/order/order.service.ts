@@ -194,6 +194,9 @@ export class OrderService {
             stock: true,
             name: true,
             price: true,
+            discount: {
+              percent: true,
+            },
           },
         },
       },
