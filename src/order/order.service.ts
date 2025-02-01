@@ -170,6 +170,7 @@ export class OrderService {
         'customer',
         'order_details',
         'order_details.product',
+        'order_details.product.discount', 
       ],
       select: {
         customer: {
@@ -201,9 +202,11 @@ export class OrderService {
         },
       },
     });
+
     if (!order) {
       throw new NotFoundException(`Order with id ${customer_id} not found`);
     }
+
     return createApiResponse(
       200,
       `Order with id ${customer_id} retrieved successfully`,
