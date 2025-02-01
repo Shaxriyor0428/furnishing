@@ -118,19 +118,11 @@ export class LikeService {
     });
 
     const productsWithLikes = products.map((product) => {
-      const discountedPrice =
-        product.price - (product.price * product.discount.percent) / 100;
       return {
         ...product,
-        price: discountedPrice,
         is_liked: likedProductIds.includes(product.id),
       };
     });
-    // const productsWithLikes = products.map((product) => ({
-    //   ...product,
-    //   is_liked: likedProductIds.includes(product.id),
-    // }));
-
     return createApiResponse(200, 'All liked products for the customer', {
       products: productsWithLikes,
     });
