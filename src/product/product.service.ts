@@ -56,8 +56,13 @@ export class ProductService {
 
     if (!product) return;
 
-    const discountedPrice =
-      product.price - (product.price * (product?.discount?.percent || 0)) / 100;
+    const discountedPrice = parseFloat(
+      (
+        product.price -
+        (product.price * (product?.discount?.percent || 0)) / 100
+      ).toFixed(2),
+    );
+
     if (product.discount && product.price !== discountedPrice) {
       await this.ProductRepo.update(productId, { price: discountedPrice });
     }

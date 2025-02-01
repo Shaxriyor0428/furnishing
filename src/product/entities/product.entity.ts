@@ -32,7 +32,7 @@ export class Product {
   @Column({ type: 'varchar', length: 1000 })
   description: string;
 
-  @Column({ type: 'int' })
+  @Column({ type: 'float', default: 0 })
   price: number;
 
   @Column({ name: 'average_rating', type: 'int' })
