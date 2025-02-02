@@ -33,7 +33,10 @@ export class Order {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   order_date: Date;
 
-  @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.order)
+  @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.order, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   order_details: OrderDetail[];
 
   @OneToOne(() => Payment, (payment) => payment.order)

@@ -14,7 +14,6 @@ import { OrderDto } from './dto/order.dto';
 import { OrderAddressesService } from '../order_addresses/order_addresses.service';
 import { OrderDetailService } from '../order_detail/order_detail.service';
 import { Product } from '../product/entities/product.entity';
-import { RemoveOrderDto } from './dto/remove-order.dto';
 
 @Injectable()
 export class OrderService {
@@ -171,7 +170,7 @@ export class OrderService {
         'customer',
         'order_details',
         'order_details.product',
-        'order_details.product.discount',
+        'order_details.product.discount', 
       ],
       select: {
         customer: {
@@ -181,7 +180,6 @@ export class OrderService {
           email: true,
         },
         order_address: {
-          id: true,
           additional_info: true,
           district: true,
           region: true,
@@ -189,7 +187,6 @@ export class OrderService {
           zip_code: true,
         },
         order_details: {
-          id: true,
           quantity: true,
           product: {
             images: true,
@@ -235,17 +232,13 @@ export class OrderService {
     });
   }
 
-  async remove(removeOrderDto: RemoveOrderDto) {
-    const { id, order_detail_id, address_id } = removeOrderDto;
+  async remove(id: number) {
     const order = await this.orderRepo.findOne({ where: { id } });
-    console.log(order);
     if (!order) {
       throw new NotFoundException(`Order with id ${id} not found`);
     }
 
-    const result = await this.orderRepo.delete(id);
-    console.log(result);
-
+    await this.orderRepo.delete(id);
     return createApiResponse(200, `Order with id ${id} removed successfully`);
   }
 }

@@ -17,7 +17,6 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Order } from './entities/order.entity';
 import { PaginationDto } from '../admin/dto/pagination.dto';
 import { OrderDto } from './dto/order.dto';
-import { RemoveOrderDto } from './dto/remove-order.dto';
 
 @ApiTags('Order')
 @Controller('order')
@@ -76,7 +75,7 @@ export class OrderController {
     status: 200,
     description: 'Removed successfully',
   })
-  remove(@Body() removeOrderDto: RemoveOrderDto) {
-    return this.orderService.remove(removeOrderDto);
+  remove(@Param('id') id: string) {
+    return this.orderService.remove(+id);
   }
 }
