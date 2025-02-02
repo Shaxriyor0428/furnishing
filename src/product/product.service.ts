@@ -7,7 +7,13 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsOrder, FindOptionsWhere, Like, Repository } from 'typeorm';
+import {
+  FindOptionsOrder,
+  FindOptionsWhere,
+  Like,
+  MoreThan,
+  Repository,
+} from 'typeorm';
 import { PaginationDto } from 'src/admin/dto/pagination.dto';
 import { createApiResponse } from '../common/utils';
 import { Category } from '../category/entities/category.entity';
@@ -73,7 +79,7 @@ export class ProductService {
         }
       } catch (error) {}
     }
-    const where: FindOptionsWhere<any>[] = [];
+    const where: FindOptionsWhere<any>[] = [{ stock: MoreThan(0) }];
 
     if (filter) {
       where.push(
