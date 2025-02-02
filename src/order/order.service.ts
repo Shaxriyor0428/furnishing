@@ -14,6 +14,7 @@ import { OrderDto } from './dto/order.dto';
 import { OrderAddressesService } from '../order_addresses/order_addresses.service';
 import { OrderDetailService } from '../order_detail/order_detail.service';
 import { Product } from '../product/entities/product.entity';
+import { CreateOrderAddressDto } from '../order_addresses/dto/create-order_address.dto';
 
 @Injectable()
 export class OrderService {
@@ -36,11 +37,15 @@ export class OrderService {
     if (!customer) {
       throw new NotFoundException(`Customer with id ${customerId} not found`);
     }
-
-    const new_address = await this.orderAddressService.create({
-      ...address,
-      customer_id: customerId,
-    });
+    let new_address;
+    if (address.id) {
+      new_address = await this.orderAddressService.findOne(address.id);
+    } else {
+      new_address = await this.orderAddressService.create({
+        ...address,
+        customer_id: customerId,
+      });
+    }
 
     if (!new_address) {
       throw new BadRequestException('Error on creating address');
@@ -121,19 +126,8 @@ export class OrderService {
     const total = await this.orderRepo.count();
 
     const orders = await this.orderRepo.find({
-      relations: [
-        'order_address',
-        'customer',
-        'order_details',
-        'order_details.product',
-      ],
+      relations: ['order_address', 'order_details', 'order_details.product'],
       select: {
-        customer: {
-          first_name: true,
-          last_name: true,
-          phone_number: true,
-          email: true,
-        },
         order_address: {
           additional_info: true,
           district: true,

@@ -20,12 +20,10 @@ export class OrderAddressesService {
 
   async findAll(paginationDto: PaginationDto) {
     const { page, limit } = paginationDto;
-    const total = await this.orderAddressRepo.count();
     const calculatedSkip = (page - 1) * limit;
-    const orderAddresses = await this.orderAddressRepo.find({
+    const [orderAddresses, total] = await this.orderAddressRepo.findAndCount({
       skip: calculatedSkip,
       take: limit,
-      relations: ['customer'], // ['orders', 'customer']
     });
     return createApiResponse(
       200,
@@ -39,11 +37,7 @@ export class OrderAddressesService {
     if (!orderAddress) {
       throw new NotFoundException(`Order-Address with id ${id} not found`);
     }
-    return createApiResponse(
-      200,
-      `Order-Address with id ${id} retrieved successfully`,
-      { orderAddress },
-    );
+    return orderAddress;
   }
 
   async update(id: number, updateOrderAddressDto: UpdateOrderAddressDto) {
