@@ -167,18 +167,11 @@ export class OrderService {
       where: { customerId: customer_id },
       relations: [
         'order_address',
-        'customer',
         'order_details',
         'order_details.product',
-        'order_details.product.discount', 
+        'order_details.product.discount',
       ],
       select: {
-        customer: {
-          first_name: true,
-          last_name: true,
-          phone_number: true,
-          email: true,
-        },
         order_address: {
           additional_info: true,
           district: true,
