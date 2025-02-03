@@ -51,8 +51,8 @@ export class OrderAddressesController {
     description: 'Get order-address by ID retrieved successfully',
     type: OrderAddress,
   })
-  findOne(@Param('customer_id') customer_id: string) {
-    return this.orderAddressesService.findOne(+customer_id);
+  findCustomerAddresses(@Param('customer_id') customer_id: string) {
+    return this.orderAddressesService.findCustomerAddresses(+customer_id);
   }
 
   @Patch(':id')
