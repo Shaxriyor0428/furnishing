@@ -32,6 +32,15 @@ export class OrderAddressesService {
     );
   }
 
+  async findOne(id: number) {
+    const orderAddress = await this.orderAddressRepo.findOne({
+      where: { id },
+    });
+    if (!orderAddress) {
+      throw new NotFoundException(`Order-Address with id ${id} not found`);
+    }
+    return orderAddress;
+  }
   async findCustomerAddresses(customer_id: number) {
     const orderAddress = await this.orderAddressRepo.find({
       where: { customer_id },
