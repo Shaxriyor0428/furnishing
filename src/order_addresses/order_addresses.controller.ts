@@ -44,15 +44,15 @@ export class OrderAddressesController {
     return this.orderAddressesService.findAll(paginationDto);
   }
 
-  @Get(':id')
+  @Get(':customer_id')
   @ApiOperation({ summary: 'Get order-address by ID' })
   @ApiResponse({
     status: 200,
     description: 'Get order-address by ID retrieved successfully',
     type: OrderAddress,
   })
-  findOne(@Param('id') id: string) {
-    return this.orderAddressesService.findOne(+id);
+  findOne(@Param('customer_id') customer_id: string) {
+    return this.orderAddressesService.findOne(+customer_id);
   }
 
   @Patch(':id')
