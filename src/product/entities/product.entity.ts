@@ -35,7 +35,7 @@ export class Product {
   @Column({ type: 'float', default: 0 })
   price: number;
 
-  @Column({ name: 'average_rating', type: 'int' })
+  @Column({ name: 'average_rating', type: 'int', default: 0 })
   averageRating: number;
 
   @Column({ type: 'int' })
