@@ -220,10 +220,30 @@ export class OrderService {
   }
 
   async remove(id: number) {
-    const order = await this.orderRepo.findOne({ where: { id } });
+    const order = await this.orderRepo.findOne({
+      where: { id },
+      relations: ['order_details'],
+      select: {
+        order_details: {
+          productId: true,
+          quantity: true,
+        },
+      },
+    });
     if (!order) {
       throw new NotFoundException(`Order with id ${id} not found`);
     }
+    await Promise.all(
+      order.order_details.map(async (detail) => {
+        const product = await this.productRepo.findOne({
+          where: { id: detail.productId },
+        });
+        if (product) {
+          product.stock += detail.quantity;
+          await this.productRepo.save(product);
+        }
+      }),
+    );
 
     await this.orderRepo.delete(id);
     return createApiResponse(200, `Order with id ${id} removed successfully`);
