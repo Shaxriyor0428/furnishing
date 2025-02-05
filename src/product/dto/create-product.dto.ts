@@ -63,6 +63,7 @@ export class CreateProductDto {
   @IsInt({ message: 'Average rating must be an integer.' })
   @Min(0, { message: 'Average rating must be at least 0.' })
   @Max(5)
+  @IsOptional()
   averageRating: number;
 
   @ApiProperty({ description: 'Stock quantity of the product', example: 50 })

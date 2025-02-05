@@ -115,8 +115,10 @@ export class ProductService {
     });
 
     const productsWithLikes = products.map((product) => {
-      const discountedPrice =
-        product.price - (product.price * product?.discount?.percent) / 100;
+      const discountedPrice = product.discount
+        ? product.price - (product.price * product.discount.percent) / 100
+        : product.price;
+
       return {
         ...product,
         price: discountedPrice,
