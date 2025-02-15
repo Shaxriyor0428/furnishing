@@ -12,12 +12,18 @@ import {
 } from '@nestjs/common';
 import { CustomerService } from './customer.service';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { PaginationDto } from '../admin/dto/pagination.dto';
 import { Customer } from './entities/customer.entity';
 import { AdminAccessTokenGuard } from '../common/guards/admin.access-token.guard';
 import { CustomerSelfGuard } from '../common/guards/customer.self.guard';
 
+@ApiBearerAuth()
 @ApiTags('Customer')
 @Controller('customer')
 export class CustomerController {

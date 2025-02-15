@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { AdminAuthService } from './admin.auth.service';
 import { Admin } from '../../admin/entities/admin.entity';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { CreateAdminDto } from '../../admin/dto/create-admin.dto';
 import { Request, Response } from 'express';
 import { AdminSignInDto } from '../dto/admin-signin.dto';
@@ -22,6 +22,7 @@ import { IsCreatorGuard } from '../../common/guards/creator.guard';
 export class AdminAuthController {
   constructor(private readonly adminAuthService: AdminAuthService) {}
 
+  @ApiBearerAuth()
   @UseGuards(IsCreatorGuard)
   @ApiOperation({ summary: 'Add new Admin' })
   @ApiResponse({
@@ -51,6 +52,7 @@ export class AdminAuthController {
     return this.adminAuthService.adminSignIn(res, adminSignInDto);
   }
 
+  @ApiBearerAuth()
   @UseGuards(AdminRefreshTokenGuard)
   @ApiOperation({ summary: 'Admin refresh token' })
   @ApiResponse({
@@ -66,6 +68,7 @@ export class AdminAuthController {
     return this.adminAuthService.handleRefreshToken(res, req);
   }
 
+  @ApiBearerAuth()
   @UseGuards(AdminRefreshTokenGuard)
   @ApiOperation({ summary: 'Admin logout' })
   @ApiResponse({ status: 200, description: 'Admin logged out successfully' })
