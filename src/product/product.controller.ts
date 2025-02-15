@@ -13,7 +13,7 @@ import {
   Patch,
   Headers,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import { ProductService } from './product.service';
 import { PaginationDto } from 'src/admin/dto/pagination.dto';
 import { AdminAccessTokenGuard } from '../common/guards/admin.access-token.guard';
@@ -26,6 +26,7 @@ import { UpdateFormDto } from './dto/update-form.dto';
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
+  @ApiBearerAuth()
   @UseGuards(AdminAccessTokenGuard)
   @ApiOperation({ summary: 'Create a new product with images' })
   @ApiResponse({ status: 201, description: 'Product created successfully.' })
@@ -116,6 +117,7 @@ export class ProductController {
     return this.productService.findOne(id);
   }
 
+  @ApiBearerAuth()
   @UseGuards(AdminAccessTokenGuard)
   @Patch(':id')
   @ApiOperation({ summary: 'Update a product by ID' })
@@ -155,6 +157,7 @@ export class ProductController {
     );
   }
 
+  @ApiBearerAuth()
   @UseGuards(AdminAccessTokenGuard)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a product by ID' })

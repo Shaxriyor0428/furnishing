@@ -15,7 +15,7 @@ import {
 import { CustomerAuthService } from './customer.auth.service';
 import { Request, Response } from 'express';
 import { CreateCustomerDto } from '../../customer/dto/create-customer.dto';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CustomerSignInDto } from '../dto/customer-signin.dto';
 import { CustomerRefreshTokenGuard } from '../../common/guards/customer.refreshtoken.guard';
 import { ForgotPasswordDto } from '../dto/forgot-password.dto';
@@ -64,6 +64,7 @@ export class CustomerAuthController {
     return this.customerAuthService.signIn(res, customerSignInDto);
   }
 
+  @ApiBearerAuth()
   @UseGuards(CustomerRefreshTokenGuard)
   @ApiOperation({ summary: 'Customer refresh token' })
   @ApiResponse({
@@ -79,6 +80,7 @@ export class CustomerAuthController {
     return this.customerAuthService.handleRefreshToken(res, req);
   }
 
+  @ApiBearerAuth()
   @UseGuards(CustomerRefreshTokenGuard)
   @ApiOperation({ summary: 'Customer logout' })
   @ApiResponse({ status: 200, description: 'Customer logged out successfully' })

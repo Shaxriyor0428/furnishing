@@ -13,7 +13,7 @@ import {
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Admin } from './entities/admin.entity';
 import { AdminAccessTokenGuard } from '../common/guards/admin.access-token.guard';
 import { IsCreatorGuard } from '../common/guards/creator.guard';
@@ -31,6 +31,7 @@ export class AdminController {
   //   return this.adminService.create(createAdminDto);
   // }
 
+  @ApiBearerAuth()
   @UseGuards(AdminAccessTokenGuard)
   @Get()
   @ApiOperation({ summary: 'Get all admins' })
@@ -43,6 +44,7 @@ export class AdminController {
     return this.adminService.findAll(paginationDto);
   }
 
+  @ApiBearerAuth()
   @UseGuards(AdminSelfGuard)
   @Get(':id')
   @ApiOperation({ summary: 'Get admin by ID' })
@@ -55,6 +57,7 @@ export class AdminController {
     return this.adminService.findOne(+id);
   }
 
+  @ApiBearerAuth()
   @UseGuards(AdminSelfGuard)
   @Patch(':id')
   @ApiOperation({ summary: 'Update admin by ID' })
@@ -68,6 +71,7 @@ export class AdminController {
     return this.adminService.update(+id, updateAdminDto);
   }
 
+  @ApiBearerAuth()
   @UseGuards(IsCreatorGuard)
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
