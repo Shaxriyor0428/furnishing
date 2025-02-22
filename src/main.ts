@@ -18,24 +18,7 @@ async function start() {
   app.useGlobalFilters(new AllExceptionsFilter());
   app.use(cookieParser());
 
-  app.enableCors({
-    origin: (origin, callback) => {
-      const allowedOrigins = [
-        'http://localhost:5173',
-        'http://localhost:3000',
-        'https://shaxriyorbek.uz',
-        'https://api.shaxriyorbek.uz',
-        'https://furnishing.vercel.app',
-      ];
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new BadRequestException('Not allowed by CORS'));
-      }
-    },
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
-  });
+  app.enableCors({ origin: '*' });
 
   const config = new DocumentBuilder()
     .addBearerAuth(
