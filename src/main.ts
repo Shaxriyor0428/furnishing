@@ -20,27 +20,27 @@ async function start() {
 
   app.enableCors({ origin: '*' });
 
-  const config = new DocumentBuilder()
-    .addBearerAuth(
-      {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT',
-        description: 'Enter your Bearer token',
-      },
-      'authorization',
-    )
-    .setTitle('Furnishings')
-    .setDescription(
-      'Furnishings is an online platform designed to streamline furniture ordering and management. Users can browse a wide range of furnishings, customize their preferences, track orders, manage delivery schedules, and securely store transaction and user data.',
-    )
-    .setVersion('7.0')
-    .addTag('Nestjs, TypeOrm, Validation')
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('/api/docs', app, document);
+   const config = new DocumentBuilder()
+     .addBearerAuth({
+       type: 'http',
+       scheme: 'bearer',
+       bearerFormat: 'JWT',
+       description: 'Add the api bearer token',
+     })
+     .setTitle('Furnishings')
+     .setDescription(
+       'Furnishings is an online platform designed to streamline furniture ordering and management. Users can browse a wide range of furnishings, customize their preferences, track orders, manage delivery schedules, and securely store transaction and user data.',
+     )
+     .setVersion('1.0')
+     .addTag('Nestjs, validation, swagger, guard, mongodb')
+     .build();
 
-  await app.listen(PORT, () => console.log(`Server running at port ${PORT}`));
+   const document = SwaggerModule.createDocument(app, config);
+   SwaggerModule.setup('api/docs', app, document);
+
+   await app.listen(PORT, () =>
+     console.log(`Server running at port http://localhost:${PORT}`),
+   );
 }
 
 start();

@@ -23,7 +23,7 @@ export class AdminAuthController {
   constructor(private readonly adminAuthService: AdminAuthService) {}
 
   @ApiBearerAuth()
-  @UseGuards(IsCreatorGuard)
+  // @UseGuards(IsCreatorGuard)
   @ApiOperation({ summary: 'Add new Admin' })
   @ApiResponse({
     status: 201,
